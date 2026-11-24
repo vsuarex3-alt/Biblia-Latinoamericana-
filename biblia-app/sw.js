@@ -1,7 +1,7 @@
 /* ===== Service worker: guarda la app en el teléfono para usarla sin internet =====
    Cuando cambies cualquier archivo (por ejemplo el texto), sube el número de VERSION
    para que los teléfonos descarguen la versión nueva. */
-var VERSION = 'biblia-v14';
+var VERSION = 'biblia-v15';
 
 var ARCHIVOS = [
   './',

@@ -144,6 +144,8 @@ libros = ('/* Lista de libros y abreviaturas, y lectura de citas habladas («Jua
           '(function(root){\n' + books + '\nroot.BibliaParser = {BOOKS};\n})(this);\n\n'
           + lineas(habl_ini, habl_fin) + '\n')
 (app / 'js').mkdir(exist_ok=True)
+libros = libros.replace("else if(/^(versiculos?|versos?|vers|v|vv|coma|,|:)$/.test(x)) nums.push(',');",
+  "else if(/^(versiculos?|versos?|vers|v|vv|coma|,|:)$/.test(x)){ if(nums[nums.length-1]!==',') nums.push(','); }   // [app] «cap. 3, v. 16»")
 (app / 'js' / 'libros.js').write_text(libros, encoding='utf8')
 
 # ---------------------------------------------------------------- app.js (lógica del buscador, adaptada)
@@ -321,6 +323,45 @@ js = unico(js, "\n  doTextSearch(q, '');\n}", """
 js = unico(js, "const SHORT = {};", "const SHORT = {};\nconst OTRO_NOMBRE = {qo:'Qohelet', si:'Sirácides'};   // [app] para no confundir Eclesiastés con Eclesiástico\nconst otroNombre = id => OTRO_NOMBRE[id] ? ` <small class=\\\"otro\\\">(${OTRO_NOMBRE[id]})</small>` : '';")
 js = unico(js, '<header><h2>${esc(nm)} <span class="cn">${c}</span></h2>', '<header><h2>${esc(nm)} <span class="cn">${c}</span>${otroNombre(id)}</h2>')
 js = unico(js, '<div class="meta" style="margin-top:4px"><h2>${esc(b.name)}</h2>', '<div class="meta" style="margin-top:4px"><h2>${esc(b.name)}${otroNombre(id)}</h2>')
+
+# 18) Formas de citar en clase: paréntesis, «cap. 3, v. 16» y libros de un solo capítulo
+js = unico(js, "function understand(q){\n  let refs = parseRefs(q);",
+"""function understand(q){
+  q = q.replace(/[()\\[\\]{}]/g,' ').replace(/^[\\s.,;:]+|[\\s.,;:]+$/g,'').replace(/\\s+/g,' ').trim();   // [app] «(Jn 3,16)», «Jn 3,16.»
+  let refs = parseRefs(q);""")
+js = unico(js, "    const b=BYID[r.id]; if(!b || r.v1!=null || r.c1!==r.c2 || getChapter(r.id, r.c1)) return r;",
+"""    const b=BYID[r.id];
+    // [app] libros de un solo capítulo (Abdías, Filemón, Judas, 2 y 3 Juan): «Flm 6» es el versículo 6
+    if(b && b.chapters.length===1 && r.v1==null && Math.max(r.c1, r.c2)>1 && existeVers(r.id, 1, r.c1)){
+      cambio=true; return {id:r.id, c1:1, v1:r.c1, c2:1, v2:Math.max(r.c1, r.c2)};   // también «Jds 3-5»
+    }
+    if(!b || r.v1!=null || r.c1!==r.c2 || getChapter(r.id, r.c1)) return r;""")
+
+# 19) Más formas de citar: «Jn 3,16 y Rom 5,8», «Hch 2,1-4; 2,42-47», «Sal 23 (22)», capítulo inexistente
+js = unico(js, "  q = q.replace(/[()\\[\\]{}]/g,' ')",
+"  q = q.replace(/(\\d+)\\s*\\(\\s*\\d+\\s*\\)/g,'$1')   // [app] «Sal 23 (22)»: doble numeración de los Salmos\n       .replace(/[()\\[\\]{}]/g,' ')")
+js = unico(js, "  let refs = parseRefs(q);\n  if(refs){ const f=separarPegados(refs);",
+"""  // [app] «Jn 3,16 y Rom 5,8»: una «y» seguida de otro libro separa dos citas
+  q = q.replace(/\\s+y\\s+(?=((?:[1-3]\\s*)?[a-záéíóúñ]+)\\s*\\d)/gi, (m, lib)=> findBook(lib) ? '; ' : m);
+  let refs = parseRefs(q);
+  if(refs){ const f=separarPegados(refs);""")
+js = unico(js, "  for(const part of parts){\n    const m = part.match(",
+"""  for(const part of parts){
+    // [app] «Hch 2,1-4; 2,42-47»: la parte sin libro usa el libro anterior
+    if(lastBook && /^\\d+\\s*([,:.\\-–]|$)/.test(part)){
+      const mm=part.match(/^(\\d+)\\s*(.*)$/), sub=parseRefs(bookName(lastBook)+' '+mm[1]+' '+mm[2]);
+      if(!sub) return null; out.push(...sub); continue;
+    }
+    const m = part.match(""")
+# separar números pegados solo con 3 cifras o más («503»); con 2 cifras se ofrece como sugerencia
+js = unico(js, "    const s=String(r.c1), opciones=[];", "    const s=String(r.c1), opciones=[]; if(s.length<3) return r;")
+js = unico(js, ": `<div class=\"empty\"><b>No encontré esa cita</b>Revisa el libro, el capítulo y el versículo.</div>`; })();",
+""": (()=>{ const r1=u.refs.find(r=>BYID[r.id] && !getChapter(r.id, r.c1));
+              if(!r1) return `<div class=\"empty\"><b>No encontré esa cita</b>Revisa el libro, el capítulo y el versículo.</div>`;
+              const nC=BYID[r1.id].chapters.length, s2=String(r1.c1); let sug='';
+              if(s2.length===2 && r1.v1==null){ const c=+s2[0], v=+s2[1]; if(v>0 && existeVers(r1.id,c,v)) sug=`<div class=\"recent\"><button class=\"btn\" type=\"button\" id=\"sugCita\" data-q=\"${esc(bookName(r1.id))} ${c},${v}\">¿Quisiste decir ${esc(bookName(r1.id))} ${c},${v}?</button></div>`; }
+              return `<div class=\"empty\"><b>${esc(bookName(r1.id))} tiene ${nC} capítulo${nC>1?'s':''}</b>No existe el capítulo ${r1.c1}. Revisa el número.${sug}</div>`; })(); })();
+      const sg=$('#sugCita'); if(sg) sg.onclick=()=>runQuery(sg.dataset.q, {tidy:true});""")
 
 # 11) Modo oscuro (botón)
 js = js + '''

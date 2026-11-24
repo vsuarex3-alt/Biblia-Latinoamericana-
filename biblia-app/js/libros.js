@@ -47,7 +47,7 @@ const BOOKS = [
  ['jdt','Judit',['jdt','judit'],['judit']],
  ['bar','Baruc',['bar','ba','baruc'],['baruc']],
  ['sab','Sabiduría',['sab','sb','sabiduría','sabiduria'],['sabiduria']],
- ['si','Eclesiástico',['si','sir','sirácides','siracides','eclo','eclesiástico','eclesiastico'],['siracides']],
+ ['si','Eclesiástico',['si','sir','sirácides','siracides','sirácida','siracida','sirac','ben sira','bensira','ben sirac','eclo','ecli','eclesiástico','eclesiastico'],['siracides']],
  ['sal','Salmos',['sal','sl','salmo','salmos','ps'],['salmos']],
  ['mt','Mateo',['mt','mat','mateo'],['evangeliosegunsanmateo','evangeliosegunmateo']],
  ['mc','Marcos',['mc','mr','mar','marcos'],['evangeliosegunsanmarcos','evangeliosegunmarcos']],
@@ -59,7 +59,7 @@ const BOOKS = [
  ['2co','2 Corintios',['2co','2cor','2 corintios','2corintios'],['segundacartaaloscorintios']],
  ['gal','Gálatas',['gal','gál','ga','gálatas','galatas'],['cartaalosgalatas']],
  ['ef','Efesios',['ef','efe','efesios'],['cartaalosefesios']],
- ['flp','Filipenses',['flp','fil','filipenses'],['cartaalosfilipenses']],
+ ['flp','Filipenses',['flp','fil','fp','flps','filip','filipenses'],['cartaalosfilipenses']],
  ['col','Colosenses',['col','colosenses'],['cartaaloscolosenses']],
  ['flm','Filemón',['flm','filem','filemón','filemon'],['cartaafilemon']],
  ['1ts','1 Tesalonicenses',['1ts','1tes','1 tesalonicenses','1tesalonicenses'],['primeracartaalostesalonicenses']],
@@ -120,7 +120,7 @@ function toCita(text){
   const nums=[]; // tokens: números y separadores
   for(const x of w.slice(k)){
     if(/^\d+$/.test(x)) nums.push(+x);
-    else if(/^(versiculos?|versos?|vers|v|vv|coma|,|:)$/.test(x)) nums.push(',');
+    else if(/^(versiculos?|versos?|vers|v|vv|coma|,|:)$/.test(x)){ if(nums[nums.length-1]!==',') nums.push(','); }   // [app] «cap. 3, v. 16»
     else if(/^(al|a|hasta|guion|-|–)$/.test(x)) nums.push('-');
     else if(/^(y|\.|e)$/.test(x)) nums.push('.');
     else if(/^(capitulo|capitulos|cap|del|desde|el|de|los)$/.test(x)) continue;

@@ -69,6 +69,11 @@ function parseRefs(q){
   const parts = q.split(';').map(s=>s.trim()).filter(Boolean);
   const out=[]; let lastBook=null;
   for(const part of parts){
+    // [app] «Hch 2,1-4; 2,42-47»: la parte sin libro usa el libro anterior
+    if(lastBook && /^\d+\s*([,:.\-–]|$)/.test(part)){
+      const mm=part.match(/^(\d+)\s*(.*)$/), sub=parseRefs(bookName(lastBook)+' '+mm[1]+' '+mm[2]);
+      if(!sub) return null; out.push(...sub); continue;
+    }
     const m = part.match(/^((?:[1-3]|i{1,3})?\s*[^\d\s][^\d]*?)?\s*(\d+)\s*(.*)$/i);
     if(!m) return null;
     const id = m[1] ? findBook(m[1]) : lastBook;
@@ -111,6 +116,10 @@ function resolveRef(r){
 }
 /* Interpreta texto escrito o dictado: «Juan seis ocho al catorce» → refs */
 function understand(q){
+  q = q.replace(/(\d+)\s*\(\s*\d+\s*\)/g,'$1')   // [app] «Sal 23 (22)»: doble numeración de los Salmos
+       .replace(/[()\[\]{}]/g,' ').replace(/^[\s.,;:]+|[\s.,;:]+$/g,'').replace(/\s+/g,' ').trim();   // [app] «(Jn 3,16)», «Jn 3,16.»
+  // [app] «Jn 3,16 y Rom 5,8»: una «y» seguida de otro libro separa dos citas
+  q = q.replace(/\s+y\s+(?=((?:[1-3]\s*)?[a-záéíóúñ]+)\s*\d)/gi, (m, lib)=> findBook(lib) ? '; ' : m);
   let refs = parseRefs(q);
   if(refs){ const f=separarPegados(refs); return {refs:f.refs, spoken:f.cambio}; }
   const conv = S.toCita(q, findBook);
@@ -123,8 +132,13 @@ function existeVers(id, c, v){ const ch=getChapter(id,c); return !!(ch && ch.v.s
 function separarPegados(refs){
   let cambio=false;
   const out=refs.map(r=>{
-    const b=BYID[r.id]; if(!b || r.v1!=null || r.c1!==r.c2 || getChapter(r.id, r.c1)) return r;
-    const s=String(r.c1), opciones=[];
+    const b=BYID[r.id];
+    // [app] libros de un solo capítulo (Abdías, Filemón, Judas, 2 y 3 Juan): «Flm 6» es el versículo 6
+    if(b && b.chapters.length===1 && r.v1==null && Math.max(r.c1, r.c2)>1 && existeVers(r.id, 1, r.c1)){
+      cambio=true; return {id:r.id, c1:1, v1:r.c1, c2:1, v2:Math.max(r.c1, r.c2)};   // también «Jds 3-5»
+    }
+    if(!b || r.v1!=null || r.c1!==r.c2 || getChapter(r.id, r.c1)) return r;
+    const s=String(r.c1), opciones=[]; if(s.length<3) return r;
     const m=s.match(/^(\d+?)0(\d+)$/); if(m) opciones.push([+m[1], +m[2]]);      // 503 → 5,3
     for(let i=1;i<s.length;i++){ if(s[i]!=='0') opciones.push([+s.slice(0,i), +s.slice(i)]); }   // 316 → 3,16
     for(const [c,v] of opciones){ if(c>0 && v>0 && existeVers(r.id, c, v)){ cambio=true; return {id:r.id, c1:c, v1:v, c2:c, v2:v}; } }
@@ -284,7 +298,12 @@ function renderSearch(q, opts){
     const res=$('#res');
     if(!total){ const FALTAN={za:[6], '2tm':[4]}; const sinCap=u.refs.find(r=>BYID[r.id] && !getChapter(r.id, r.c1) && (r.c1<=Math.max(...BYID[r.id].chapters.map(x=>x.n)) || (FALTAN[r.id]||[]).includes(r.c1)));
       res.innerHTML = sinCap ? `<div class="empty"><b>Este capítulo no está disponible</b>${esc(bookName(sinCap.id))} ${sinCap.c1} no viene en el PDF del que se tomó el texto de esta app.</div>`
-        : (()=>{ const r0=u.refs.find(r=>getChapter(r.id, r.c1)); return r0 ? `<div class="empty"><b>Ese versículo no aparece con ese número</b>En esta edición, ${esc(bookName(r0.id))} ${r0.c1} no tiene un versículo con ese número (la numeración cambia un poco entre Biblias).<div class="recent"><button class="btn" type="button" id="verCap" data-id="${r0.id}" data-c="${r0.c1}">Leer ${esc(bookName(r0.id))} ${r0.c1}</button></div></div>` : `<div class="empty"><b>No encontré esa cita</b>Revisa el libro, el capítulo y el versículo.</div>`; })();
+        : (()=>{ const r0=u.refs.find(r=>getChapter(r.id, r.c1)); return r0 ? `<div class="empty"><b>Ese versículo no aparece con ese número</b>En esta edición, ${esc(bookName(r0.id))} ${r0.c1} no tiene un versículo con ese número (la numeración cambia un poco entre Biblias).<div class="recent"><button class="btn" type="button" id="verCap" data-id="${r0.id}" data-c="${r0.c1}">Leer ${esc(bookName(r0.id))} ${r0.c1}</button></div></div>` : (()=>{ const r1=u.refs.find(r=>BYID[r.id] && !getChapter(r.id, r.c1));
+              if(!r1) return `<div class="empty"><b>No encontré esa cita</b>Revisa el libro, el capítulo y el versículo.</div>`;
+              const nC=BYID[r1.id].chapters.length, s2=String(r1.c1); let sug='';
+              if(s2.length===2 && r1.v1==null){ const c=+s2[0], v=+s2[1]; if(v>0 && existeVers(r1.id,c,v)) sug=`<div class="recent"><button class="btn" type="button" id="sugCita" data-q="${esc(bookName(r1.id))} ${c},${v}">¿Quisiste decir ${esc(bookName(r1.id))} ${c},${v}?</button></div>`; }
+              return `<div class="empty"><b>${esc(bookName(r1.id))} tiene ${nC} capítulo${nC>1?'s':''}</b>No existe el capítulo ${r1.c1}. Revisa el número.${sug}</div>`; })(); })();
+      const sg=$('#sugCita'); if(sg) sg.onclick=()=>runQuery(sg.dataset.q, {tidy:true});
       const vc=$('#verCap'); if(vc) vc.onclick=()=>openChapter(vc.dataset.id, +vc.dataset.c); return; }
     blocks.forEach(bl=>{
       if(!bl.verses.length) return;
