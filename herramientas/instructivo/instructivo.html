@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Instructivo: de app web a aplicación de verdad</title>
+<style>
+@font-face{font-family:"Cormorant";font-weight:600;src:url(../../biblia-app/fuentes/cormorant-latin-600-normal.woff2)}
+@font-face{font-family:"Cormorant";font-weight:500;font-style:italic;src:url(../../biblia-app/fuentes/cormorant-latin-500-italic.woff2)}
+@font-face{font-family:"Literata";font-weight:400;src:url(../../biblia-app/fuentes/literata-latin-400-normal.woff2)}
+@font-face{font-family:"Literata";font-weight:400;font-style:italic;src:url(../../biblia-app/fuentes/literata-latin-400-italic.woff2)}
+@font-face{font-family:"Figtree";font-weight:400;src:url(../../biblia-app/fuentes/figtree-latin-400-normal.woff2)}
+@font-face{font-family:"Figtree";font-weight:600;src:url(../../biblia-app/fuentes/figtree-latin-600-normal.woff2)}
+@font-face{font-family:"Figtree";font-weight:700;src:url(../../biblia-app/fuentes/figtree-latin-700-normal.woff2)}
+@page{size:Letter; margin:18mm 18mm 20mm}
+:root{--ink:#16322a; --soft:#4d635b; --forest:#0f3a2c; --gold:#a97f22; --goldb:#d6b25a; --wash:#f4ead0; --line:#d9dfd5; --paper:#f2f4ee}
+*{box-sizing:border-box}
+body{margin:0; font-family:"Literata",Georgia,serif; color:var(--ink); font-size:10.6pt; line-height:1.55}
+h1,h2,h3{font-family:"Cormorant",Garamond,serif; font-weight:600; color:var(--forest); line-height:1.15}
+h2{font-size:21pt; margin:22pt 0 6pt; padding-bottom:4pt; border-bottom:1.5pt solid var(--goldb); break-after:avoid}
+h3{font-size:15pt; margin:14pt 0 4pt; break-after:avoid}
+p{margin:0 0 7pt}
+ul,ol{margin:0 0 8pt; padding-left:18pt}
+li{margin-bottom:3pt}
+b,strong{font-family:"Figtree",sans-serif; font-weight:600; font-size:.97em}
+code{font-family:"Figtree",sans-serif; background:var(--wash); padding:0 4px; border-radius:3px; font-size:.92em}
+a{color:var(--gold)}
+.portada{background:var(--forest); color:#f1ecd9; border-radius:10pt; padding:26pt 26pt 0; margin-bottom:16pt; overflow:hidden}
+.portada .sub{font-family:"Figtree"; letter-spacing:.16em; text-transform:uppercase; font-size:8.5pt; color:var(--goldb)}
+.portada h1{color:#f1ecd9; font-size:34pt; margin:6pt 0 4pt}
+.portada h1 em{color:var(--goldb); font-weight:500}
+.portada p{font-size:11pt; color:#e4ddc6; max-width:430pt}
+.greca{height:13pt; margin:18pt -26pt 0; background:#164a39 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='14' viewBox='0 0 36 18'%3E%3Cpath d='M0 14H6V4H24V13H13V8H18M24 13V14H36' fill='none' stroke='%23d6b25a' stroke-width='1.8'/%3E%3C/svg%3E") repeat-x; background-size:28px 14px; border-top:1px solid var(--goldb)}
+.caja{border:1pt solid var(--line); border-left:4pt solid var(--goldb); background:#fbfaf5; border-radius:6pt; padding:9pt 12pt; margin:8pt 0 10pt; break-inside:avoid}
+.caja.alerta{border-left-color:#9b3b2a; background:#fbf3f1}
+.caja.verde{border-left-color:var(--forest); background:#f1f6f2}
+.caja b.t{display:block; font-size:10.5pt; margin-bottom:3pt; color:var(--forest)}
+.alerta b.t{color:#9b3b2a}
+table{width:100%; border-collapse:collapse; margin:6pt 0 10pt; font-size:9.6pt; break-inside:avoid}
+th{font-family:"Figtree"; font-weight:600; text-align:left; background:var(--forest); color:#f1ecd9; padding:5pt 7pt}
+td{border-bottom:1pt solid var(--line); padding:5pt 7pt; vertical-align:top}
+tr:nth-child(even) td{background:#f7f8f4}
+.pasos{counter-reset:p; list-style:none; padding-left:0}
+.pasos>li{counter-increment:p; position:relative; padding-left:24pt; margin-bottom:6pt}
+.pasos>li::before{content:counter(p); position:absolute; left:0; top:1pt; width:16pt; height:16pt; border-radius:50%; background:var(--forest); color:#f1ecd9; font-family:"Figtree"; font-weight:700; font-size:8.5pt; text-align:center; line-height:16pt}
+.check li{list-style:"☐  "}
+.cita{font-style:italic; color:var(--soft); border-left:2pt solid var(--line); padding-left:10pt; margin:6pt 0 8pt}
+.carta{font-size:9.8pt; background:#fff; border:1pt dashed var(--gold); border-radius:6pt; padding:10pt 13pt; break-inside:avoid}
+.pie{font-family:"Figtree"; font-size:8pt; color:var(--soft); margin-top:18pt; border-top:1pt solid var(--line); padding-top:6pt}
+.salto{break-before:page}
+</style>
+</head>
+<body>
+
+<section class="portada">
+  <div class="sub">Instructivo · Biblia Latinoamericana</div>
+  <h1>De app web a <em>aplicación de verdad</em></h1>
+  <p>Cómo convertir la app que ya está publicada en una aplicación para Android y para iPhone: los pasos, los costos, lo que hay que cuidar y cómo quitar el aviso de Netlify.</p>
+  <div class="greca"></div>
+</section>
+
+<h2>1. Lo que se pidió</h2>
+<p>Ya terminamos la app web instalable de la Biblia Latinoamericana. Más adelante quieres <b>convertirla en una aplicación de verdad</b>: instalable en Android y también en iPhone, como cualquier aplicación de tienda. Además, quieres que <b>no aparezca el botón «Powered by Netlify»</b> con su anuncio «Build your own site with Netlify».</p>
+
+<h2>2. Dónde estamos hoy</h2>
+<ul>
+  <li><b>Enlace:</b> <a href="https://biblia-catolicavhsr.netlify.app">https://biblia-catolicavhsr.netlify.app</a>, publicada en Netlify.</li>
+  <li><b>Es una «app web instalable» (PWA):</b> se instala desde el enlace (Safari → Compartir → «Agregar a inicio», o «Instalar» en Android) y funciona sin internet.</li>
+  <li><b>Contenido:</b> 73 libros y 35 394 versículos. Zacarías 6 y 2 Timoteo 4 se agregaron porque no venían en el PDF. Incluye referencias marginales (OpenBible.info), búsqueda por cita, por palabra y hablada, historial con notas, tamaño de letra y modo oscuro.</li>
+  <li><b>El código</b> está en GitHub, repositorio <code>NOVIEMBRE</code>, rama <code>claude/stoic-tesla-rq6fjg</code>. La carpeta que se publica es <code>biblia-app</code>.</li>
+</ul>
+<div class="caja verde"><b class="t">La buena noticia</b>No hay que empezar de cero. Todos los caminos de este instructivo parten de la app que ya existe.</div>
+
+<h2>3. Antes de empezar: los derechos de autor</h2>
+<div class="caja alerta"><b class="t">Esto es lo más importante</b>
+La Biblia Latinoamericana pertenece a su editorial (San Pablo o Verbo Divino, según el país). Compartirla con la familia por un enlace es un uso privado. <b>Subirla a Google Play o a la App Store es publicarla para todo el mundo</b>, y para eso se necesita <b>permiso escrito de la editorial</b>. Sin ese permiso, Google o Apple pueden retirar la aplicación si la editorial lo pide.</div>
+<p><b>Qué hacer:</b> escribir a la editorial antes de pagar cualquier cuenta de desarrollador. Si no dan permiso, quedan dos caminos:</p>
+<ul>
+  <li><b>Solo para la familia:</b> instalarla sin pasar por la tienda (Camino A para Android, TestFlight para iPhone).</li>
+  <li><b>Para todos:</b> usar una traducción de dominio público, por ejemplo la Reina-Valera 1909.</li>
+</ul>
+<p><b>Modelo de carta</b> (completar los datos entre corchetes):</p>
+<div class="carta">
+Estimados señores de [Editorial]:<br><br>
+Mi nombre es [nombre] y preparé, para uso de mi familia, una aplicación para celular con el texto de <i>La Biblia Latinoamericana</i>, que permite leer, buscar citas y consultar referencias, también sin conexión a internet. Me gustaría publicarla en Google Play y en la App Store, de forma gratuita y sin publicidad, citando siempre a la editorial como titular de los derechos.<br><br>
+Les escribo para pedir su autorización, o para saber qué condiciones o licencia serían necesarias. Quedo atento a su respuesta.<br><br>
+Atentamente,<br>[nombre] · [correo] · [teléfono]
+</div>
+
+<h2>4. Quitar el aviso «Powered by Netlify»</h2>
+<p>Ese aviso puede aparecer en dos lugares distintos. Cada uno se quita de forma diferente.</p>
+
+<h3>a) El botón «Powered by Netlify» en la página</h3>
+<p>Es el botón oscuro de abajo a la derecha que dice <b>«Powered by Netlify»</b>. Al tocarlo se abre un anuncio: «Build your own site with Netlify». <b>No lo pone nuestra app, lo agrega Netlify.</b> Según Netlify, los proyectos nuevos del <b>plan gratuito</b> creados desde el 19 de agosto de 2026 lo muestran a todos los visitantes. También puede aparecer otra barra, la «pre-launch toolbar» («Private», «Share»…), que solo ven quienes tienen sesión iniciada en tu cuenta mientras el sitio es privado.</p>
+<p><b>Opción 1 — Apagarlo en Netlify (pruébalo primero):</b></p>
+<ol class="pasos">
+  <li>En Netlify, abre el proyecto <code>biblia-catolicavhsr</code> y toca <b>Make public</b> para que deje de estar en «Private».</li>
+  <li>Entra a <b>Project configuration → General → Powered by Netlify badge</b> y apágalo. Netlify indica que este interruptor solo está disponible <b>si tu plan lo permite</b>; en el plan gratuito puede no aparecer.</li>
+  <li>Según Netlify, el cambio se aplica al instante, sin volver a publicar. Comprueba en una <b>ventana de incógnito</b> o en el celular de otra persona.</li>
+</ol>
+<p><b>Opción 2 — Si en el plan gratuito no se puede apagar: pasarla a Cloudflare Pages (gratis, sin anuncio)</b></p>
+<p>Cloudflare Pages también publica sitios gratis, se sube con el mismo ZIP o la misma carpeta <code>biblia-app</code> y no agrega ningún anuncio. La app funciona igual, porque no depende de Netlify.</p>
+<ol class="pasos">
+  <li>Crea una cuenta gratuita en <a href="https://dash.cloudflare.com/sign-up">dash.cloudflare.com</a>.</li>
+  <li>Entra a <b>Workers &amp; Pages → Create → Pages → Upload assets</b> (subir archivos directamente; los nombres pueden variar un poco).</li>
+  <li>Ponle un nombre, por ejemplo <code>biblia-familia</code>, y sube la carpeta <code>biblia-app</code> (descomprimida) o el ZIP.</li>
+  <li>Te dará un enlace como <code>https://biblia-familia.pages.dev</code>. Ábrelo en incógnito para confirmar que no hay anuncio.</li>
+  <li>Manda el enlace nuevo a la familia. Quien ya la tenga instalada debe borrar el ícono viejo e instalarla desde el enlace nuevo.</li>
+</ol>
+<div class="caja alerta"><b class="t">No recomendado: esconderlo con código</b>Hay quien esconde el botón con CSS, pero Netlify lo pone como condición de su plan gratuito. Lo correcto es apagarlo con el interruptor (si tu plan lo permite) o usar otro servicio, como Cloudflare Pages.</div>
+<p class="cita">Fuentes: Netlify, «Powered by Netlify badge» (docs.netlify.com/manage/projects/powered-by-netlify-badge) y «The pre-launch toolbar and the Powered by Netlify badge» (netlify.com/changelog, 19 de agosto de 2026).</p>
+
+<h3>b) La barra «Ejecutándose en Chrome» en la futura app de Android</h3>
+<p>Al convertir la app con PWABuilder (Camino A), Android puede mostrar arriba la dirección web o el aviso «Ejecutándose en Chrome». Desaparece cuando Android comprueba que la app y el sitio son del mismo dueño:</p>
+<ol class="pasos">
+  <li>PWABuilder entrega, junto con la app, un archivo llamado <code>assetlinks.json</code>.</li>
+  <li>Ese archivo se copia dentro de <code>biblia-app/.well-known/assetlinks.json</code> y se vuelve a publicar (en Netlify o Cloudflare Pages, con el mismo ZIP de siempre).</li>
+  <li>Debe abrirse en <code>https://biblia-catolicavhsr.netlify.app/.well-known/assetlinks.json</code>. Con eso la app se ve a pantalla completa, sin barras.</li>
+</ol>
+<div class="caja"><b class="t">Opcional: un dominio propio</b>Un dominio propio, por ejemplo <code>bibliafamilia.com</code>, cuesta unos 12 a 20 dólares al año. Quita «netlify.app» del enlace y se conecta en Netlify desde <b>Domain management</b>.</div>
+
+<h2>5. Camino A — Android solo para la familia (gratis)</h2>
+<p>Es el más rápido. En una tarde puede estar lista. No hace falta permiso de la editorial porque no se publica en ninguna tienda.</p>
+<ol class="pasos">
+  <li>Entra a <a href="https://www.pwabuilder.com">pwabuilder.com</a> y pega el enlace <code>https://biblia-catolicavhsr.netlify.app</code>.</li>
+  <li>PWABuilder revisa la app (ya tiene manifest, íconos y modo sin internet). Elige <b>Package for stores → Android</b>.</li>
+  <li>Llena los datos: nombre <b>Biblia Latinoamericana</b>, nombre corto <b>Biblia</b>, y un identificador como <code>com.familia.biblia</code>. Elige la opción de generar una clave de firma nueva.</li>
+  <li>Descarga el paquete. Trae un archivo <b>.apk</b> (para instalar directo), un <b>.aab</b> (para Google Play), el <code>assetlinks.json</code> y la <b>clave de firma</b>.</li>
+  <li><b>Guarda la clave de firma en un lugar seguro.</b> Sin ella no se podrán publicar actualizaciones de esa misma app.</li>
+  <li>Sube <code>assetlinks.json</code> a Netlify como se explica en la sección 4b.</li>
+  <li>Manda el <b>.apk</b> por WhatsApp o por Drive. Al abrirlo, Android pedirá permiso para «instalar apps de fuentes desconocidas»; se acepta una sola vez.</li>
+</ol>
+<div class="caja verde"><b class="t">Ventaja</b>La app muestra lo que está publicado en Netlify. Cuando subas una versión nueva del ZIP, los teléfonos la reciben solos, sin reinstalar nada.</div>
+
+<h2>6. Camino B — Google Play (para todos)</h2>
+<p><b>Requisito:</b> el permiso de la editorial (sección 3).</p>
+<ol class="pasos">
+  <li>Crea una cuenta en <a href="https://play.google.com/console">Google Play Console</a>. Cuesta <b>25 dólares, un solo pago</b>, y pide verificar tu identidad.</li>
+  <li>Crea la app y sube el archivo <b>.aab</b> que dio PWABuilder.</li>
+  <li>Completa la ficha: descripción, capturas de pantalla, ícono de 512×512 (ya existe: <code>biblia-app/iconos/icon-512.png</code>), clasificación de contenido y una <b>política de privacidad</b>. La app no recoge datos y todo se guarda en el teléfono, así que la política es muy sencilla.</li>
+  <li><b>Prueba cerrada obligatoria:</b> las cuentas personales nuevas deben probar la app con al menos <b>12 personas durante 14 días</b> antes de publicarla para todos. Tu familia puede ser ese grupo de prueba.</li>
+  <li>Después de la prueba, se solicita el paso a <b>producción</b>. Google la revisa en unos días.</li>
+</ol>
+
+<h2>7. Camino C — iPhone (App Store o solo la familia)</h2>
+<ul>
+  <li><b>Cuenta de Apple Developer:</b> <b>99 dólares al año</b>.</li>
+  <li><b>Una Mac con Xcode:</b> la tuya o la de alguien que te ayude. Apple no permite preparar la app desde Windows.</li>
+  <li><b>Apple suele rechazar</b> las aplicaciones que solo «envuelven» una página web (regla 4.2). Hay que agregarle funciones propias del iPhone, como notificaciones o widgets. Por eso para iPhone conviene el Camino D.</li>
+  <li><b>Solo para la familia:</b> con <b>TestFlight</b> puedes invitar hasta 10 000 personas sin publicarla en la tienda. Igual se necesita la cuenta de 99 dólares, y cada versión de prueba dura 90 días.</li>
+  <li>Mientras tanto, en iPhone la app web instalable (Safari → Compartir → «Agregar a inicio») funciona muy bien y no cuesta nada.</li>
+</ul>
+
+<h2>8. Camino D — Aplicación completa para Android y iPhone (Capacitor)</h2>
+<p><b>Capacitor</b> es una herramienta gratuita que toma el mismo código de <code>biblia-app</code> y crea dos proyectos: uno de Android (Android Studio) y otro de iPhone (Xcode). Así la Biblia va <b>dentro</b> de la aplicación y se pueden agregar funciones propias del teléfono:</p>
+<ul>
+  <li><b>Versículo del día</b> con una notificación a la hora que elijas.</li>
+  <li><b>Favoritos y subrayados</b> de colores.</li>
+  <li><b>Compartir un versículo como imagen</b> bonita por WhatsApp.</li>
+  <li><b>Widget</b> en la pantalla de inicio con el versículo del día.</li>
+  <li>Lecturas de la misa del día (con su propio permiso de derechos).</li>
+</ul>
+<p>Este camino da más trabajo, pero es el que Apple acepta con más facilidad. Te puedo ayudar a prepararlo paso a paso en el mismo repositorio.</p>
+
+<h2>9. Costos y tiempos</h2>
+<table>
+  <tr><th>Camino</th><th>Costo</th><th>Necesitas</th><th>Tiempo aproximado</th></tr>
+  <tr><td><b>App web actual</b> (ya hecha)</td><td>Gratis</td><td>Nada más</td><td>Lista</td></tr>
+  <tr><td><b>A.</b> Android solo familia (PWABuilder)</td><td>Gratis</td><td>Una computadora</td><td>Una tarde</td></tr>
+  <tr><td><b>B.</b> Google Play</td><td>25 USD una vez</td><td>Permiso de la editorial · 12 personas de prueba</td><td>3 a 4 semanas (por la prueba de 14 días)</td></tr>
+  <tr><td><b>C.</b> iPhone con TestFlight</td><td>99 USD al año</td><td>Mac con Xcode</td><td>1 a 2 semanas</td></tr>
+  <tr><td><b>C/D.</b> App Store</td><td>99 USD al año</td><td>Permiso de la editorial · Mac · funciones extra</td><td>1 a 2 meses</td></tr>
+  <tr><td><b>Dominio propio</b> (opcional)</td><td>12–20 USD al año</td><td>—</td><td>Un día</td></tr>
+</table>
+<p class="cita">Los precios son los de Google y Apple al momento de escribir esto; conviene confirmarlos en sus páginas antes de pagar.</p>
+
+<h2>10. Orden recomendado</h2>
+<ol class="pasos">
+  <li><b>Ahora:</b> hacer pública la app y apagar el botón «Powered by Netlify». Si tu plan no lo permite, pasarla a Cloudflare Pages (sección 4a).</li>
+  <li><b>Esta semana:</b> escribir a la editorial con la carta modelo (sección 3).</li>
+  <li><b>Mientras responden:</b> crear la app de Android solo para la familia con PWABuilder y subir <code>assetlinks.json</code> (Camino A).</li>
+  <li><b>Si dan permiso:</b> publicar en Google Play (Camino B), usando a la familia como grupo de prueba.</li>
+  <li><b>Después:</b> la versión completa con Capacitor (Camino D) y, con ella, el iPhone (Camino C).</li>
+</ol>
+
+<h2>11. Lista de verificación</h2>
+<ul class="check">
+  <li>App pública en Netlify (sin «Private»).</li>
+  <li>Sin el botón «Powered by Netlify» (apagado o en Cloudflare Pages), comprobado en incógnito.</li>
+  <li>Carta enviada a la editorial.</li>
+  <li>Paquete de Android creado en PWABuilder.</li>
+  <li>Clave de firma guardada en un lugar seguro (y en una copia).</li>
+  <li><code>assetlinks.json</code> subido a <code>biblia-app/.well-known/</code> y publicado.</li>
+  <li>APK probado en un Android: abre sin barra de Chrome y funciona en modo avión.</li>
+  <li>(Si hay permiso) Cuenta de Google Play, ficha, política de privacidad y prueba cerrada de 14 días.</li>
+  <li>(Para iPhone) Cuenta de Apple Developer y acceso a una Mac.</li>
+</ul>
+
+<h2>12. Dónde está cada cosa</h2>
+<table>
+  <tr><th>Archivo o carpeta</th><th>Qué es</th></tr>
+  <tr><td><code>biblia-app/</code></td><td>La app completa que se publica (el ZIP de Netlify sale de aquí).</td></tr>
+  <tr><td><code>biblia-app/js/datos-biblia.js</code></td><td>El texto bíblico.</td></tr>
+  <tr><td><code>biblia-app/manifest.json</code> e <code>iconos/</code></td><td>Nombre, colores e íconos que usa PWABuilder.</td></tr>
+  <tr><td><code>GUIA-PUBLICAR.md</code></td><td>Cómo publicar y actualizar en Netlify.</td></tr>
+  <tr><td><code>herramientas/REVISION.md</code></td><td>Revisión del texto: lo que se corrigió y lo que falta en el PDF.</td></tr>
+  <tr><td><code>herramientas/convertir.js</code></td><td>Vuelve a generar el texto desde el PDF.</td></tr>
+  <tr><td><code>herramientas/diseno/construir.py</code></td><td>Genera el diseño a partir de tu buscador original.</td></tr>
+</table>
+
+<p class="pie">Instructivo preparado para el proyecto «Biblia Latinoamericana» · noviembre de 2026. Los nombres de botones de Netlify, Google y Apple pueden cambiar con el tiempo; si alguno no coincide, busca la opción con un nombre parecido.</p>
+</body>
+</html>

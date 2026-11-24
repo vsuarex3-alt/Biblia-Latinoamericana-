@@ -1,0 +1,8 @@
+herramientas/node_modules/
+*.pdf
+herramientas/analisis.json
+herramientas/cobertura.json
+biblia-app-netlify.zip
+biblia-app.zip
+
+!Instructivo-App-Biblia.pdf

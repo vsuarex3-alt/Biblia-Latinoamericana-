@@ -1,0 +1,3 @@
+# Netlify: publica solo la carpeta de la app
+[build]
+  publish = "biblia-app"

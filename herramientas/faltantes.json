@@ -1,0 +1,1407 @@
+[
+ {
+  "id": "gn",
+  "libro": "Génesis",
+  "cap": 9,
+  "versiculos": [
+   29
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "lv",
+  "libro": "Levítico",
+  "cap": 24,
+  "versiculos": [
+   13,
+   14,
+   15,
+   16
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "nm",
+  "libro": "Números",
+  "cap": 25,
+  "versiculos": [
+   19
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "1r",
+  "libro": "1 Reyes",
+  "cap": 5,
+  "versiculos": [
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   32
+  ],
+  "tipo": "numeracion"
+ },
+ {
+  "id": "1r",
+  "libro": "1 Reyes",
+  "cap": 11,
+  "versiculos": [
+   3
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "1r",
+  "libro": "1 Reyes",
+  "cap": 11,
+  "versiculos": [
+   39
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "1cr",
+  "libro": "1 Crónicas",
+  "cap": 5,
+  "versiculos": [
+   41
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "1cr",
+  "libro": "1 Crónicas",
+  "cap": 25,
+  "versiculos": [
+   31
+  ],
+  "tipo": "numeracion"
+ },
+ {
+  "id": "2cr",
+  "libro": "2 Crónicas",
+  "cap": 31,
+  "versiculos": [
+   21
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "1m",
+  "libro": "1 Macabeos",
+  "cap": 3,
+  "versiculos": [
+   60
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "2m",
+  "libro": "2 Macabeos",
+  "cap": 12,
+  "versiculos": [
+   46
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "is",
+  "libro": "Isaías",
+  "cap": 3,
+  "versiculos": [
+   26
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "is",
+  "libro": "Isaías",
+  "cap": 16,
+  "versiculos": [
+   14
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "is",
+  "libro": "Isaías",
+  "cap": 37,
+  "versiculos": [
+   38
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jer",
+  "libro": "Jeremías",
+  "cap": 10,
+  "versiculos": [
+   9
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "jer",
+  "libro": "Jeremías",
+  "cap": 12,
+  "versiculos": [
+   6
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jer",
+  "libro": "Jeremías",
+  "cap": 27,
+  "versiculos": [
+   19,
+   20
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "jer",
+  "libro": "Jeremías",
+  "cap": 41,
+  "versiculos": [
+   18
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jer",
+  "libro": "Jeremías",
+  "cap": 51,
+  "versiculos": [
+   53
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "ez",
+  "libro": "Ezequiel",
+  "cap": 10,
+  "versiculos": [
+   14,
+   15
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "ez",
+  "libro": "Ezequiel",
+  "cap": 16,
+  "versiculos": [
+   22
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "os",
+  "libro": "Oseas",
+  "cap": 4,
+  "versiculos": [
+   19
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jl",
+  "libro": "Joel",
+  "cap": 4,
+  "versiculos": [
+   21
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "za",
+  "libro": "Zacarías",
+  "cap": 3,
+  "versiculos": [
+   9
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "za",
+  "libro": "Zacarías",
+  "cap": 6,
+  "versiculos": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "tipo": "capitulo-ausente"
+ },
+ {
+  "id": "za",
+  "libro": "Zacarías",
+  "cap": 7,
+  "versiculos": [
+   8
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jb",
+  "libro": "Job",
+  "cap": 13,
+  "versiculos": [
+   28
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jb",
+  "libro": "Job",
+  "cap": 14,
+  "versiculos": [
+   13,
+   14
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jb",
+  "libro": "Job",
+  "cap": 20,
+  "versiculos": [
+   10
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "jb",
+  "libro": "Job",
+  "cap": 31,
+  "versiculos": [
+   40
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "jb",
+  "libro": "Job",
+  "cap": 42,
+  "versiculos": [
+   4
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "est",
+  "libro": "Ester",
+  "cap": 5,
+  "versiculos": [
+   1,
+   2
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "est",
+  "libro": "Ester",
+  "cap": 8,
+  "versiculos": [
+   13,
+   14,
+   15,
+   16,
+   17
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "est",
+  "libro": "Ester",
+  "cap": 15,
+  "versiculos": [
+   1,
+   2,
+   3
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "tob",
+  "libro": "Tobías",
+  "cap": 6,
+  "versiculos": [
+   1
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "tob",
+  "libro": "Tobías",
+  "cap": 12,
+  "versiculos": [
+   22
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 1,
+  "versiculos": [
+   5,
+   7,
+   21
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 3,
+  "versiculos": [
+   19,
+   25
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 11,
+  "versiculos": [
+   15,
+   16
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 13,
+  "versiculos": [
+   14
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 16,
+  "versiculos": [
+   15,
+   16
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 17,
+  "versiculos": [
+   10
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 17,
+  "versiculos": [
+   5,
+   9,
+   16,
+   18,
+   21
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 18,
+  "versiculos": [
+   3
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 19,
+  "versiculos": [
+   18,
+   19,
+   21
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 22,
+  "versiculos": [
+   7,
+   8
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 24,
+  "versiculos": [
+   18,
+   24
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 25,
+  "versiculos": [
+   12
+  ],
+  "tipo": "numeracion"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 26,
+  "versiculos": [
+   19,
+   20,
+   21,
+   22,
+   23,
+   24,
+   25,
+   26,
+   27
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 34,
+  "versiculos": [
+   27,
+   28,
+   29,
+   30,
+   31
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 35,
+  "versiculos": [
+   25,
+   26
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 36,
+  "versiculos": [
+   28,
+   29,
+   30,
+   31
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 43,
+  "versiculos": [
+   4
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "si",
+  "libro": "Sirácides (Eclesiástico)",
+  "cap": 50,
+  "versiculos": [
+   29
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 1,
+  "versiculos": [
+   6
+  ],
+  "tipo": "numeracion"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 3,
+  "versiculos": [
+   1
+  ],
+  "tipo": "numeracion"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 4,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 5,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 6,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 7,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 8,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 9,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 12,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 13,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 16,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 18,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 19,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 20,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 21,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 22,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 30,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 31,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 34,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 36,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 38,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 39,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 40,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 41,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 42,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 44,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 45,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 46,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 47,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 48,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 48,
+  "versiculos": [
+   6
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 49,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 51,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 51,
+  "versiculos": [
+   2
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 52,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 52,
+  "versiculos": [
+   2
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 53,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 54,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 54,
+  "versiculos": [
+   2
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 55,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 56,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 57,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 58,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 59,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 60,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 60,
+  "versiculos": [
+   2
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 61,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 62,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 62,
+  "versiculos": [
+   13
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 63,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 64,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 65,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 65,
+  "versiculos": [
+   4
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 66,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 67,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 68,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 69,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 70,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 71,
+  "versiculos": [
+   20
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 74,
+  "versiculos": [
+   4
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 75,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 76,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 77,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 80,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 81,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 83,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 84,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 85,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 88,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 89,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 92,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 92,
+  "versiculos": [
+   16
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 98,
+  "versiculos": [
+   9
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 102,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 108,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 113,
+  "versiculos": [
+   6
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 114,
+  "versiculos": [
+   8
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 115,
+  "versiculos": [
+   6
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 118,
+  "versiculos": [
+   9
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 128,
+  "versiculos": [
+   6
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 140,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 142,
+  "versiculos": [
+   1
+  ],
+  "tipo": "titulo-salmo"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 144,
+  "versiculos": [
+   11
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 145,
+  "versiculos": [
+   21
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "sal",
+  "libro": "Salmos",
+  "cap": 148,
+  "versiculos": [
+   10
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "mt",
+  "libro": "Mateo",
+  "cap": 21,
+  "versiculos": [
+   44
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "lc",
+  "libro": "Lucas",
+  "cap": 23,
+  "versiculos": [
+   17
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "hch",
+  "libro": "Hechos",
+  "cap": 10,
+  "versiculos": [
+   49
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "ef",
+  "libro": "Efesios",
+  "cap": 1,
+  "versiculos": [
+   8,
+   9
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "1tm",
+  "libro": "1 Timoteo",
+  "cap": 2,
+  "versiculos": [
+   11
+  ],
+  "tipo": "no-impreso"
+ },
+ {
+  "id": "1tm",
+  "libro": "1 Timoteo",
+  "cap": 5,
+  "versiculos": [
+   24
+  ],
+  "tipo": "dentro-de-otro"
+ },
+ {
+  "id": "2tm",
+  "libro": "2 Timoteo",
+  "cap": 4,
+  "versiculos": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15,
+   16,
+   17,
+   18,
+   19,
+   20,
+   21,
+   22
+  ],
+  "tipo": "capitulo-ausente"
+ }
+]
