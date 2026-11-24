@@ -1,4 +1,19 @@
-# Cómo publicar la Biblia Latinoamericana gratis y compartir el enlace
+# Cómo publicar la Biblia Latinoamericana y compartir el enlace
+
+## Forma actual: GitHub Pages (automática, gratis y sin anuncios)
+
+- **Enlace de la app:** https://vsuarex3-alt.github.io/Biblia-Latinoamericana-/
+- Cada cambio que se guarda en la rama `main` de este repositorio se publica **solo**, en
+  1 o 2 minutos (pestaña **Actions** → «Publicar en GitHub Pages»).
+- Los teléfonos con la app instalada reciben la versión nueva la próxima vez que la abren
+  con internet (a veces hay que abrirla dos veces).
+- Instalar en iPhone: abrir el enlace en **Safari** → Compartir → «Agregar a inicio».
+  En Android: **Chrome** → «Instalar» o menú ⋮ → «Agregar a pantalla de inicio».
+
+Lo que sigue explica otras formas de publicar (Netlify, Cloudflare), que ya no hacen falta.
+
+---
+
 
 Todo lo que se publica está en la carpeta **`biblia-app`**:
 
