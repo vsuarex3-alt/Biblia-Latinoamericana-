@@ -239,7 +239,7 @@ js = unico(js, "function xrefCard(){", "function xrefCard(){ if(XREF_INCLUIDAS) 
 js = unico(js, "let XREF=null;", "let XREF=null; const XREF_INCLUIDAS=true;   // [app] vienen dentro de la app")
 js = unico(js, "if(!XREF){ showXrefHelp(); return; }", "if(!XREF){ toast('Cargando referencias…'); return; }")
 js = js.replace("Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono.</div>`;",
-  "Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Referencias marginales: <a href=\"https://www.openbible.info/labs/cross-references/\" target=\"_blank\" rel=\"noopener\">OpenBible.info</a> (CC BY).</div>`;")
+  "Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 24 de noviembre de 2026. Referencias marginales: <a href=\"https://www.openbible.info/labs/cross-references/\" target=\"_blank\" rel=\"noopener\">OpenBible.info</a> (CC BY).</div>`;")
 
 # 13) Números pegados por el dictado: «Juan 503» / «Jn 316» → capítulo y versículo
 js = unico(js, """function understand(q){

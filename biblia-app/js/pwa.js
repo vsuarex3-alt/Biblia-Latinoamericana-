@@ -45,6 +45,14 @@
   }, 3000);
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
-    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').then(function (reg) { reg.update(); }).catch(function () {});
+    });
+    // Cuando llega una versión nueva de la app, recargar una sola vez para mostrarla
+    var habiaControl = !!navigator.serviceWorker.controller, recargada = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!habiaControl || recargada) return;
+      recargada = true; location.reload();
+    });
   }
 })();

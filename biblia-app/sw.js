@@ -1,7 +1,7 @@
 /* ===== Service worker: guarda la app en el teléfono para usarla sin internet =====
    Cuando cambies cualquier archivo (por ejemplo el texto), sube el número de VERSION
    para que los teléfonos descarguen la versión nueva. */
-var VERSION = 'biblia-v12';
+var VERSION = 'biblia-v13';
 
 var ARCHIVOS = [
   './',
@@ -35,7 +35,7 @@ var ARCHIVOS = [
 self.addEventListener('install', function (e) {
   e.waitUntil(
     caches.open(VERSION)
-      .then(function (cache) { return cache.addAll(ARCHIVOS); })
+      .then(function (cache) { return cache.addAll(ARCHIVOS.map(function (u) { return new Request(u, { cache: 'reload' }); })); })
       .then(function () { return self.skipWaiting(); })
   );
 });
@@ -50,25 +50,26 @@ self.addEventListener('activate', function (e) {
   );
 });
 
-// 3) Al pedir un archivo: lo entrega desde el teléfono al instante y,
-//    si hay internet, actualiza la copia en segundo plano.
+// 3) Al pedir un archivo: con internet, primero la versión más nueva (así las correcciones
+//    aparecen de inmediato); sin internet o si la red tarda, la copia guardada en el teléfono.
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
 
   e.respondWith(
     caches.open(VERSION).then(function (cache) {
-      return cache.match(req, { ignoreSearch: true }).then(function (guardado) {
-        var deRed = fetch(req).then(function (resp) {
-          if (resp && resp.ok) cache.put(req, resp.clone());
-          return resp;
-        }).catch(function () {
-          // Sin internet y sin copia: si es una página, muestra la app
-          if (req.mode === 'navigate') return cache.match('index.html');
-        });
-        if (guardado) { e.waitUntil(deRed); return guardado; }
-        return deRed;
+      var deRed = fetch(req, { cache: 'no-cache' }).then(function (resp) {
+        if (resp && resp.ok) cache.put(req, resp.clone());
+        return resp;
       });
+      var guardado = function () {
+        return cache.match(req, { ignoreSearch: true }).then(function (r) {
+          return r || (req.mode === 'navigate' ? cache.match('index.html') : undefined) || deRed;
+        });
+      };
+      // si la red no responde en 4 segundos, se usa la copia guardada
+      var espera = new Promise(function (ok) { setTimeout(ok, 4000); }).then(guardado);
+      return Promise.race([deRed.catch(guardado), espera]);
     })
   );
 });

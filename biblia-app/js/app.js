@@ -350,7 +350,7 @@ function renderHome(){
   bindForget();
 }
 function statsHTML(){
-  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
+  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 24 de noviembre de 2026. Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
 }
 function bindForget(){
   const f=$('#forget'); if(!f) return;
