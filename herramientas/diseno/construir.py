@@ -77,6 +77,7 @@ extra = '''
 .instalar .cerrar{flex:none; width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:var(--ink-soft); display:grid; place-items:center}
 .instalar .cerrar:hover{background:var(--gold-wash)}
 @media (min-width:1000px){ .instalar{bottom:calc(20px + env(safe-area-inset-bottom, 0px))} }
+h2 small.otro{font-family:var(--f-ui); font-size:.4em; font-weight:500; color:var(--ink-soft); letter-spacing:.02em; white-space:nowrap}
 @keyframes subir{from{transform:translateY(16px); opacity:0} to{transform:none; opacity:1}}
 '''
 css = fuentes + lineas(css_ini, css_fin) + extra
@@ -309,6 +310,17 @@ js = unico(js, "const SHORT = {qo:'Qohelet', si:'Sirácides'};", "const SHORT = 
 js = unico(js, "ha:'Ha',", "ha:'Hab',")
 js = unico(js, "qo:'Qo',", "qo:'Ecl',")
 js = unico(js, "si:'Si',", "si:'Eclo',")
+
+# 17) Escribir solo el nombre de un libro abre el libro (no una búsqueda de palabra);
+#     y Eclesiastés / Eclesiástico muestran su otro nombre para no confundirlos
+js = unico(js, "\n  doTextSearch(q, '');\n}", """
+  // [app] solo el nombre de un libro («Eclesiastés», «Ecl», «Qohelet») → abrir ese libro
+  if(!/\\d/.test(q) && !/["“”]/.test(q)){ const id=findBook(q); if(id && BYID[id]){ addRecent(bookName(id)); renderChapters(id); return; } }
+  doTextSearch(q, '');
+}""")
+js = unico(js, "const SHORT = {};", "const SHORT = {};\nconst OTRO_NOMBRE = {qo:'Qohelet', si:'Sirácides'};   // [app] para no confundir Eclesiastés con Eclesiástico\nconst otroNombre = id => OTRO_NOMBRE[id] ? ` <small class=\\\"otro\\\">(${OTRO_NOMBRE[id]})</small>` : '';")
+js = unico(js, '<header><h2>${esc(nm)} <span class="cn">${c}</span></h2>', '<header><h2>${esc(nm)} <span class="cn">${c}</span>${otroNombre(id)}</h2>')
+js = unico(js, '<div class="meta" style="margin-top:4px"><h2>${esc(b.name)}</h2>', '<div class="meta" style="margin-top:4px"><h2>${esc(b.name)}${otroNombre(id)}</h2>')
 
 # 11) Modo oscuro (botón)
 js = js + '''

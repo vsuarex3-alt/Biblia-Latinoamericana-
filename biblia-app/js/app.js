@@ -4,6 +4,8 @@ const $ = s => document.querySelector(s);
 const main = $('#main'), side = $('#side');
 const ABBR = {gn:'Gn',ex:'Ex',lv:'Lv',nm:'Nm',dt:'Dt',jos:'Jos',jue:'Jue','1s':'1 S','2s':'2 S','1r':'1 R','2r':'2 R','1cr':'1 Cr','2cr':'2 Cr',esd:'Esd',ne:'Ne','1m':'1 M','2m':'2 M',is:'Is',jer:'Jer',ez:'Ez',os:'Os',jl:'Jl',am:'Am',abd:'Abd',jon:'Jon',mi:'Mi',na:'Na',ha:'Hab',so:'So',ag:'Ag',za:'Za',mal:'Mal',dn:'Dn',jb:'Jb',pr:'Pr',qo:'Ecl',ct:'Ct',rt:'Rt',lam:'Lam',est:'Est',tob:'Tob',jdt:'Jdt',bar:'Bar',sab:'Sab',si:'Eclo',sal:'Sal',mt:'Mt',mc:'Mc',lc:'Lc',jn:'Jn',hch:'Hch',rom:'Rom','1co':'1 Co','2co':'2 Co',gal:'Gál',ef:'Ef',flp:'Flp',col:'Col',flm:'Flm','1ts':'1 Ts','2ts':'2 Ts','1tm':'1 Tm','2tm':'2 Tm',tit:'Tit',heb:'Heb',stg:'Stgo','1p':'1 P','2p':'2 P',jds:'Jds','1jn':'1 Jn','2jn':'2 Jn','3jn':'3 Jn',ap:'Ap'};
 const SHORT = {};
+const OTRO_NOMBRE = {qo:'Qohelet', si:'Sirácides'};   // [app] para no confundir Eclesiastés con Eclesiástico
+const otroNombre = id => OTRO_NOMBRE[id] ? ` <small class=\"otro\">(${OTRO_NOMBRE[id]})</small>` : '';
 const NT_START = P.BOOKS.findIndex(b=>b[0]==='mt');
 const ORDER = {}; P.BOOKS.forEach((b,i)=>ORDER[b[0]]=i);
 const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
@@ -301,6 +303,8 @@ function renderSearch(q, opts){
     window.scrollTo({top:0});
     return;
   }
+  // [app] solo el nombre de un libro («Eclesiastés», «Ecl», «Qohelet») → abrir ese libro
+  if(!/\d/.test(q) && !/["“”]/.test(q)){ const id=findBook(q); if(id && BYID[id]){ addRecent(bookName(id)); renderChapters(id); return; } }
   doTextSearch(q, '');
 }
 function scopeOptions(sel){
@@ -370,7 +374,7 @@ function renderChapters(id){
   if(b.chapters.length===1){ openChapter(id, b.chapters[0].n); return; }
   setView('books');
   main.innerHTML=`<div class="col"><div class="crumbs"><button type="button" id="back">Libros</button><span>›</span><span>${esc(b.name)}</span></div>
-    <div class="meta" style="margin-top:4px"><h2>${esc(b.name)}</h2><span class="count">${b.chapters.length} capítulos</span></div>
+    <div class="meta" style="margin-top:4px"><h2>${esc(b.name)}${otroNombre(id)}</h2><span class="count">${b.chapters.length} capítulos</span></div>
     <div class="chaps">${b.chapters.map(c=>`<button type="button" data-c="${c.n}">${c.n}</button>`).join('')}</div></div>`;
   $('#back').onclick=renderBooks;
   main.querySelectorAll('[data-c]').forEach(el=>el.onclick=()=>openChapter(id, +el.dataset.c));
@@ -385,7 +389,7 @@ function openChapter(id, c, focusV){
   const nm=SHORT[id]||b.name;
   main.innerHTML=`<div class="col"><div class="crumbs"><button type="button" id="cBooks">Libros</button><span>›</span><button type="button" id="cBook">${esc(nm)}</button><span>›</span><span>Capítulo ${c}</span></div>
     <article class="reader">
-      <header><h2>${esc(nm)} <span class="cn">${c}</span></h2>
+      <header><h2>${esc(nm)} <span class="cn">${c}</span>${otroNombre(id)}</h2>
         <div class="tools"><button class="sz" type="button" id="szDown" aria-label="Letra más chica">A−</button><button class="sz" type="button" id="szUp" aria-label="Letra más grande">A+</button><button class="sz wide${studyMode?' on':''}" type="button" id="refsBtn" aria-pressed="${studyMode}">Referencias</button></div></header>
       ${studyMode && XREF
         ? `<div class="chapter study">${ch.v.map(v=>`<div class="vrow"><span class="v${v[5]?' agregado':''}" data-v="${v[0]}"><sup>${vEtiqueta(v)}</sup>${esc(v[1])}</span><div class="mref">${xrefChips(xrefsFor(id,c,v[0]).slice(0,6))}</div></div>`).join('')}</div>`

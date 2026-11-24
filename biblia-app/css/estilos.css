@@ -331,5 +331,6 @@ mark{background:var(--mark); color:inherit; border-radius:2px; padding:0 1px}
 .instalar .cerrar{flex:none; width:36px; height:36px; border:0; border-radius:50%; background:transparent; color:var(--ink-soft); display:grid; place-items:center}
 .instalar .cerrar:hover{background:var(--gold-wash)}
 @media (min-width:1000px){ .instalar{bottom:calc(20px + env(safe-area-inset-bottom, 0px))} }
+h2 small.otro{font-family:var(--f-ui); font-size:.4em; font-weight:500; color:var(--ink-soft); letter-spacing:.02em; white-space:nowrap}
 @keyframes subir{from{transform:translateY(16px); opacity:0} to{transform:none; opacity:1}}
 
