@@ -80,7 +80,27 @@ extra = '''
 h2 small.otro{font-family:var(--f-ui); font-size:.4em; font-weight:500; color:var(--ink-soft); letter-spacing:.02em; white-space:nowrap}
 @keyframes subir{from{transform:translateY(16px); opacity:0} to{transform:none; opacity:1}}
 '''
+extra += """
+/* ---------- Evangelio del día ---------- */
+.evg-card{display:flex; gap:14px; align-items:center; width:100%; text-align:left; background:var(--forest); color:var(--on-forest); border:0; border-radius:18px; padding:16px 18px; margin:4px 0 18px; box-shadow:var(--shadow)}
+.evg-card .ico{flex:none; width:44px; height:44px; border-radius:50%; border:1.5px solid var(--gold-bright); display:grid; place-items:center; color:var(--gold-bright); font-family:var(--f-display); font-size:24px}
+.evg-card b{display:block; font-family:var(--f-ui); font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-bright)}
+.evg-card span{display:block; font-family:var(--f-display); font-size:23px; font-weight:600; line-height:1.15}
+.evg-card small{display:block; font-family:var(--f-read); font-size:14px; opacity:.85; margin-top:2px}
+.evg-head .fecha{font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold); font-weight:700}
+.evg-head h2{margin:4px 0 2px; font-family:var(--f-display); font-size:clamp(30px,6vw,40px); font-weight:600; line-height:1.1}
+.evg-head .santos{font-size:14px; color:var(--ink-soft)}
+.evg-titulo{font-family:var(--f-read); font-style:italic; color:var(--ink-soft); margin:0 0 10px}
+.evg-otras{display:flex; flex-direction:column; gap:8px; margin-top:16px}
+.evg-otra{display:flex; justify-content:space-between; align-items:center; gap:10px; width:100%; text-align:left; background:var(--leaf); border:1px solid var(--line); border-radius:12px; padding:12px 14px}
+.evg-otra:hover{border-color:var(--gold)}
+.evg-otra b{font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); display:block}
+.evg-otra span{font-weight:600}
+.evg-fuente{font-size:13px; color:var(--ink-soft); margin-top:16px}
+.evg-fuente a{color:var(--gold); font-weight:600}
+"""
 css = fuentes + lineas(css_ini, css_fin) + extra
+css = css.replace("grid-template-columns:repeat(4,1fr)", "grid-template-columns:repeat(5,1fr)")
 (app / 'css').mkdir(exist_ok=True)
 (app / 'css' / 'estilos.css').write_text(css + '\n', encoding='utf8')
 
@@ -93,6 +113,8 @@ marcado = unico(marcado, '<div class="stat" id="statusText"></div>',
     '<svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>'
     '</button></div>')
 marcado = re.sub(r'\n<input type="file" id="file"[^\n]*', '', marcado)    # ya no se carga el PDF
+marcado = unico(marcado, '<button role="tab" id="tabSearch"',
+  '<button role="tab" id="tabEvg" aria-selected="false" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 8h10"/><path d="M5 21h14"/></svg>Evangelio</button>\n  <button role="tab" id="tabSearch"')
 
 html = f'''<!doctype html>
 <html lang="es">
@@ -367,6 +389,38 @@ js = unico(js, ": `<div class=\"empty\"><b>No encontré esa cita</b>Revisa el li
 import re as _re
 js = _re.sub(r"const ABBR = \{.*?\};", "const ABBR = {gn:'Gén',ex:'Ex',lv:'Lev',nm:'Núm',dt:'Dt',jos:'Jos',jue:'Jue','1s':'1 Sam','2s':'2 Sam','1r':'1 Re','2r':'2 Re','1cr':'1 Cró','2cr':'2 Cró',esd:'Es',ne:'Ne','1m':'1 Mac','2m':'2 Mac',is:'Is',jer:'Jer',ez:'Ez',os:'Os',jl:'Jl',am:'Am',abd:'Abd',jon:'Jon',mi:'Mi',na:'Na',ha:'Hab',so:'Sof',ag:'Ag',za:'Za',mal:'Mal',dn:'Dn',jb:'Job',pr:'Pro',qo:'Ec',ct:'Cant',rt:'Rt',lam:'Lam',est:'Est',tob:'Tob',jdt:'Jdt',bar:'Ba',sab:'Sab',si:'Sir',sal:'Sal',mt:'Mt',mc:'Mc',lc:'Lc',jn:'Jn',hch:'He',rom:'Rom','1co':'1 Co','2co':'2 Co',gal:'Gál',ef:'Ef',flp:'Fil',col:'Col',flm:'Filem','1ts':'1 Tes','2ts':'2 Tes','1tm':'1 Tim','2tm':'2 Tim',tit:'Ti',heb:'Heb',stg:'Stgo','1p':'1 Pe','2p':'2 Pe',jds:'Jud','1jn':'1 Jn','2jn':'2 Jn','3jn':'3 Jn',ap:'Ap'};   // [app] índice oficial", js, count=1)
 js = unico(js, "const OTRO_NOMBRE = {qo:'Qohelet', si:'Sirácides'};", "const OTRO_NOMBRE = {qo:'Qohelet', si:'Eclesiástico'};")
+
+# 21) Evangelio del día: enlace a la página del día en Misal.mx (calendario de México)
+js = unico(js, "  $('#tabHist').setAttribute('aria-selected', v==='history');",
+  "  $('#tabHist').setAttribute('aria-selected', v==='history');\n  $('#tabEvg').setAttribute('aria-selected', v==='gospel');")
+js = unico(js, "  main.innerHTML=`<div class=\"col\">\n    <div class=\"empty\"><b>Escribe o dicta una cita</b>",
+  "  main.innerHTML=`<div class=\"col\">${tarjetaEvangelio()}\n    <div class=\"empty\"><b>Escribe o dicta una cita</b>")
+js = unico(js, "  bindXrefCard();\n  main.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>runQuery(b.dataset.q));\n  $('#resume')",
+  "  bindXrefCard();\n  const ec=$('#evgCard'); if(ec) ec.onclick=renderEvangelio;\n  main.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>runQuery(b.dataset.q));\n  $('#resume')")
+js = js + """
+/* ---------- [app] Evangelio del día: abre la página del día en Misal.mx (calendario de México) ---------- */
+function hoyMX(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Mexico_City', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date()); }
+function enlaceMisal(){ return 'https://misal.mx/' + hoyMX(); }
+function tarjetaEvangelio(){
+  return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${esc(dateLong(hoyMX()))}</span><small>Lecturas de la misa según el calendario de México</small></div></button>`;
+}
+function renderEvangelio(){
+  setView('gospel');
+  main.innerHTML=`<div class="col">
+    <div class="evg-head"><span class="fecha">${esc(dateLong(hoyMX()))} · hoy</span><h2>Evangelio del día</h2>
+      <div class="santos">Las lecturas de la misa de hoy según el calendario litúrgico de México.</div></div>
+    <a class="evg-card" id="evgAbrir" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Abrir el Evangelio de hoy</span><small>Se abre la página de hoy en Misal.mx (necesita internet)</small></div></a>
+    <div class="evg-otras"><b style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)">Leerlo en tu Biblia Latinoamericana</b>
+      <p class="hint" style="margin:0">Escribe aquí la cita del Evangelio (por ejemplo <i>Lc 21,12-19</i>) para leerla, copiarla y guardarla en tu historial.</p>
+      <form class="search" id="evgForm" autocomplete="off" style="box-shadow:none;border:1px solid var(--line)"><input id="evgCita" type="search" enterkeyhint="search" placeholder="Cita del Evangelio de hoy" aria-label="Cita del Evangelio de hoy"><button class="go" type="submit">Leer</button></form>
+    </div>
+    <p class="evg-fuente">El enlace abre <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx/${hoyMX()}</a>, un misal diario mexicano. La app no copia su contenido.</p>
+  </div>`;
+  $('#evgForm').onsubmit=e=>{ e.preventDefault(); const q=$('#evgCita').value.trim(); if(q) runQuery(q, {tidy:true}); };
+  window.scrollTo({top:0});
+}
+$('#tabEvg').onclick=renderEvangelio;
+"""
 
 # 11) Modo oscuro (botón)
 js = js + '''

@@ -234,6 +234,7 @@ function setView(v){
   $('#tabBooks').setAttribute('aria-selected', v==='books');
   $('#tabRead').setAttribute('aria-selected', v==='read');
   $('#tabHist').setAttribute('aria-selected', v==='history');
+  $('#tabEvg').setAttribute('aria-selected', v==='gospel');
   $('#tabRead').disabled = !BIBLE || !lastRead;
   if(v!=='read') clearSel();
   renderSide();
@@ -360,7 +361,7 @@ function addRecent(label){ let r=store.get('blat-recent', []); r=[label, ...r.fi
 function renderHome(){
   setView('search');
   const recent=store.get('blat-recent', []);
-  main.innerHTML=`<div class="col">
+  main.innerHTML=`<div class="col">${tarjetaEvangelio()}
     <div class="empty"><b>Escribe o dicta una cita</b>Por ejemplo <button class="linkbtn" data-q="Jn 14,6">Jn 14,6</button>, <button class="linkbtn" data-q="Isaías cuarenta y tres uno al cinco">«Isaías cuarenta y tres uno al cinco»</button> o una palabra como <button class="linkbtn" data-q="paz">paz</button>.
       ${recent.length?`<div class="recent">${recent.map(r=>`<button class="pill" type="button" data-q="${esc(r)}">${esc(r)}</button>`).join('')}</div>`:''}
     </div>
@@ -368,6 +369,7 @@ function renderHome(){
     ${xrefCard()}
     ${statsHTML()}</div>`;
   bindXrefCard();
+  const ec=$('#evgCard'); if(ec) ec.onclick=renderEvangelio;
   main.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>runQuery(b.dataset.q));
   $('#resume') && ($('#resume').onclick=()=>openChapter(lastRead.id, lastRead.c));
   bindForget();
@@ -871,6 +873,29 @@ useBible(desdeDatos(window.BIBLIA));
   sx.onload=()=>{ if(window.XREF_DATA){ XREF=window.XREF_DATA; const a=document.activeElement; if(!(a && /^(INPUT|TEXTAREA)$/.test(a.tagName))) rerender(); } };
   document.head.appendChild(sx); })();
 if(saved){ qEl.value=saved; syncClear(); renderSearch(saved); } else renderHome();
+/* ---------- [app] Evangelio del día: abre la página del día en Misal.mx (calendario de México) ---------- */
+function hoyMX(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Mexico_City', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date()); }
+function enlaceMisal(){ return 'https://misal.mx/' + hoyMX(); }
+function tarjetaEvangelio(){
+  return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${esc(dateLong(hoyMX()))}</span><small>Lecturas de la misa según el calendario de México</small></div></button>`;
+}
+function renderEvangelio(){
+  setView('gospel');
+  main.innerHTML=`<div class="col">
+    <div class="evg-head"><span class="fecha">${esc(dateLong(hoyMX()))} · hoy</span><h2>Evangelio del día</h2>
+      <div class="santos">Las lecturas de la misa de hoy según el calendario litúrgico de México.</div></div>
+    <a class="evg-card" id="evgAbrir" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Abrir el Evangelio de hoy</span><small>Se abre la página de hoy en Misal.mx (necesita internet)</small></div></a>
+    <div class="evg-otras"><b style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)">Leerlo en tu Biblia Latinoamericana</b>
+      <p class="hint" style="margin:0">Escribe aquí la cita del Evangelio (por ejemplo <i>Lc 21,12-19</i>) para leerla, copiarla y guardarla en tu historial.</p>
+      <form class="search" id="evgForm" autocomplete="off" style="box-shadow:none;border:1px solid var(--line)"><input id="evgCita" type="search" enterkeyhint="search" placeholder="Cita del Evangelio de hoy" aria-label="Cita del Evangelio de hoy"><button class="go" type="submit">Leer</button></form>
+    </div>
+    <p class="evg-fuente">El enlace abre <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx/${hoyMX()}</a>, un misal diario mexicano. La app no copia su contenido.</p>
+  </div>`;
+  $('#evgForm').onsubmit=e=>{ e.preventDefault(); const q=$('#evgCita').value.trim(); if(q) runQuery(q, {tidy:true}); };
+  window.scrollTo({top:0});
+}
+$('#tabEvg').onclick=renderEvangelio;
+
 /* ---------- [app] Modo claro / oscuro ---------- */
 const temaBtn=$('#tema');
 const temaActual=()=>document.documentElement.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
