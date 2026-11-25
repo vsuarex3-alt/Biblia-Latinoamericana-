@@ -242,7 +242,7 @@ js = unico(js, "function xrefCard(){", "function xrefCard(){ if(XREF_INCLUIDAS) 
 js = unico(js, "let XREF=null;", "let XREF=null; const XREF_INCLUIDAS=true;   // [app] vienen dentro de la app")
 js = unico(js, "if(!XREF){ showXrefHelp(); return; }", "if(!XREF){ toast('Cargando referencias…'); return; }")
 js = js.replace("Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono.</div>`;",
-  "Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 24 de noviembre de 2026. Referencias marginales: <a href=\"https://www.openbible.info/labs/cross-references/\" target=\"_blank\" rel=\"noopener\">OpenBible.info</a> (CC BY).</div>`;")
+  "Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 25 de noviembre de 2026. Referencias marginales: <a href=\"https://www.openbible.info/labs/cross-references/\" target=\"_blank\" rel=\"noopener\">OpenBible.info</a> (CC BY).</div>`;")
 
 # 13) Números pegados por el dictado: «Juan 503» / «Jn 316» → capítulo y versículo
 js = unico(js, """function understand(q){
@@ -362,6 +362,11 @@ js = unico(js, ": `<div class=\"empty\"><b>No encontré esa cita</b>Revisa el li
               if(s2.length===2 && r1.v1==null){ const c=+s2[0], v=+s2[1]; if(v>0 && existeVers(r1.id,c,v)) sug=`<div class=\"recent\"><button class=\"btn\" type=\"button\" id=\"sugCita\" data-q=\"${esc(bookName(r1.id))} ${c},${v}\">¿Quisiste decir ${esc(bookName(r1.id))} ${c},${v}?</button></div>`; }
               return `<div class=\"empty\"><b>${esc(bookName(r1.id))} tiene ${nC} capítulo${nC>1?'s':''}</b>No existe el capítulo ${r1.c1}. Revisa el número.${sug}</div>`; })(); })();
       const sg=$('#sugCita'); if(sg) sg.onclick=()=>runQuery(sg.dataset.q, {tidy:true});""")
+
+# 20) Abreviaturas oficiales del índice de La Biblia Latinoamérica (Verbo Divino / San Pablo)
+import re as _re
+js = _re.sub(r"const ABBR = \{.*?\};", "const ABBR = {gn:'Gén',ex:'Ex',lv:'Lev',nm:'Núm',dt:'Dt',jos:'Jos',jue:'Jue','1s':'1 Sam','2s':'2 Sam','1r':'1 Re','2r':'2 Re','1cr':'1 Cró','2cr':'2 Cró',esd:'Es',ne:'Ne','1m':'1 Mac','2m':'2 Mac',is:'Is',jer:'Jer',ez:'Ez',os:'Os',jl:'Jl',am:'Am',abd:'Abd',jon:'Jon',mi:'Mi',na:'Na',ha:'Hab',so:'Sof',ag:'Ag',za:'Za',mal:'Mal',dn:'Dn',jb:'Job',pr:'Pro',qo:'Ec',ct:'Cant',rt:'Rt',lam:'Lam',est:'Est',tob:'Tob',jdt:'Jdt',bar:'Ba',sab:'Sab',si:'Sir',sal:'Sal',mt:'Mt',mc:'Mc',lc:'Lc',jn:'Jn',hch:'He',rom:'Rom','1co':'1 Co','2co':'2 Co',gal:'Gál',ef:'Ef',flp:'Fil',col:'Col',flm:'Filem','1ts':'1 Tes','2ts':'2 Tes','1tm':'1 Tim','2tm':'2 Tim',tit:'Ti',heb:'Heb',stg:'Stgo','1p':'1 Pe','2p':'2 Pe',jds:'Jud','1jn':'1 Jn','2jn':'2 Jn','3jn':'3 Jn',ap:'Ap'};   // [app] índice oficial", js, count=1)
+js = unico(js, "const OTRO_NOMBRE = {qo:'Qohelet', si:'Sirácides'};", "const OTRO_NOMBRE = {qo:'Qohelet', si:'Eclesiástico'};")
 
 # 11) Modo oscuro (botón)
 js = js + '''

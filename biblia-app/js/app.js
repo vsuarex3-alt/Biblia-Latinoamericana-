@@ -2,9 +2,9 @@
 const P = window.BibliaParser, S = window.Hablado;
 const $ = s => document.querySelector(s);
 const main = $('#main'), side = $('#side');
-const ABBR = {gn:'Gn',ex:'Ex',lv:'Lv',nm:'Nm',dt:'Dt',jos:'Jos',jue:'Jue','1s':'1 S','2s':'2 S','1r':'1 R','2r':'2 R','1cr':'1 Cr','2cr':'2 Cr',esd:'Esd',ne:'Ne','1m':'1 M','2m':'2 M',is:'Is',jer:'Jer',ez:'Ez',os:'Os',jl:'Jl',am:'Am',abd:'Abd',jon:'Jon',mi:'Mi',na:'Na',ha:'Hab',so:'So',ag:'Ag',za:'Za',mal:'Mal',dn:'Dn',jb:'Jb',pr:'Pr',qo:'Ecl',ct:'Ct',rt:'Rt',lam:'Lam',est:'Est',tob:'Tob',jdt:'Jdt',bar:'Bar',sab:'Sab',si:'Eclo',sal:'Sal',mt:'Mt',mc:'Mc',lc:'Lc',jn:'Jn',hch:'Hch',rom:'Rom','1co':'1 Co','2co':'2 Co',gal:'Gál',ef:'Ef',flp:'Flp',col:'Col',flm:'Flm','1ts':'1 Ts','2ts':'2 Ts','1tm':'1 Tm','2tm':'2 Tm',tit:'Tit',heb:'Heb',stg:'Stgo','1p':'1 P','2p':'2 P',jds:'Jds','1jn':'1 Jn','2jn':'2 Jn','3jn':'3 Jn',ap:'Ap'};
+const ABBR = {gn:'Gén',ex:'Ex',lv:'Lev',nm:'Núm',dt:'Dt',jos:'Jos',jue:'Jue','1s':'1 Sam','2s':'2 Sam','1r':'1 Re','2r':'2 Re','1cr':'1 Cró','2cr':'2 Cró',esd:'Es',ne:'Ne','1m':'1 Mac','2m':'2 Mac',is:'Is',jer:'Jer',ez:'Ez',os:'Os',jl:'Jl',am:'Am',abd:'Abd',jon:'Jon',mi:'Mi',na:'Na',ha:'Hab',so:'Sof',ag:'Ag',za:'Za',mal:'Mal',dn:'Dn',jb:'Job',pr:'Pro',qo:'Ec',ct:'Cant',rt:'Rt',lam:'Lam',est:'Est',tob:'Tob',jdt:'Jdt',bar:'Ba',sab:'Sab',si:'Sir',sal:'Sal',mt:'Mt',mc:'Mc',lc:'Lc',jn:'Jn',hch:'He',rom:'Rom','1co':'1 Co','2co':'2 Co',gal:'Gál',ef:'Ef',flp:'Fil',col:'Col',flm:'Filem','1ts':'1 Tes','2ts':'2 Tes','1tm':'1 Tim','2tm':'2 Tim',tit:'Ti',heb:'Heb',stg:'Stgo','1p':'1 Pe','2p':'2 Pe',jds:'Jud','1jn':'1 Jn','2jn':'2 Jn','3jn':'3 Jn',ap:'Ap'};   // [app] índice oficial
 const SHORT = {};
-const OTRO_NOMBRE = {qo:'Qohelet', si:'Sirácides'};   // [app] para no confundir Eclesiastés con Eclesiástico
+const OTRO_NOMBRE = {qo:'Qohelet', si:'Eclesiástico'};   // [app] para no confundir Eclesiastés con Eclesiástico
 const otroNombre = id => OTRO_NOMBRE[id] ? ` <small class=\"otro\">(${OTRO_NOMBRE[id]})</small>` : '';
 const NT_START = P.BOOKS.findIndex(b=>b[0]==='mt');
 const ORDER = {}; P.BOOKS.forEach((b,i)=>ORDER[b[0]]=i);
@@ -373,7 +373,7 @@ function renderHome(){
   bindForget();
 }
 function statsHTML(){
-  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 24 de noviembre de 2026. Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
+  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 25 de noviembre de 2026. Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
 }
 function bindForget(){
   const f=$('#forget'); if(!f) return;

@@ -2,6 +2,28 @@
 
 Revisión hecha sobre `La-Biblia-Latinoamericana.pdf` (1715 páginas). La app tiene **73 libros y 35.394 versículos**.
 
+## 0. Nombres, orden y abreviaturas: índice oficial
+
+Se compararon con el **índice oficial** de La Biblia Latinoamérica que publica la editorial
+**Verbo Divino** (coeditada con San Pablo), en dos ediciones:
+
+- [La Biblia Latinoamérica, letra grande (muestra oficial en PDF)](https://verbodivino.es/hojear/4/la-biblia-latinoamerica-letra-grande-cartone.pdf)
+- [La Biblia Latinoamérica, bolsillo (muestra oficial en PDF)](https://verbodivino.es/hojear/6/la-biblia-latinoamerica-bolsillo.pdf)
+
+Resultado:
+- **Orden de los 73 libros:** ya coincidía exactamente con el índice oficial.
+- **Texto:** Génesis 1,1-19 de la muestra oficial es idéntico, palabra por palabra, al de la app.
+- **Nombres corregidos:** Habacuq (antes Habacuc), Cantar (antes Cantar de los Cantares),
+  Sirácides (Eclesiástico) (antes Eclesiástico), Hechos de los apóstoles (antes Hechos).
+  Eclesiastés (Qohelet) se mantiene. «Éxodo» conserva la tilde (el índice lo imprime «Exodo»
+  por la costumbre de no acentuar mayúsculas).
+- **Abreviaturas:** todas las de la app son ahora las del índice oficial (Gén, Ex, Lev, Núm, Dt,
+  Jos, Jue, 1 Sam, 2 Sam, 1 Re, 2 Re, 1 Cró, 2 Cró, Es, Ne, 1 Mac, 2 Mac, Is, Jer, Ez, Os, Jl, Am,
+  Abd, Jon, Mi, Na, Hab, Sof, Ag, Za, Mal, Dn, Job, Pro, Ec, Cant, Rt, Lam, Est, Tob, Jdt, Ba, Sab,
+  Sir, Sal; Mt, Mc, Lc, Jn, He, Rom, 1 Co, 2 Co, Gál, Ef, Fil, Col, Filem, 1 Tes, 2 Tes, 1 Tim,
+  2 Tim, Ti, Heb, Stgo, 1 Pe, 2 Pe, Jud, 1 Jn, 2 Jn, 3 Jn, Ap). Las abreviaturas comunes de otras
+  Biblias (Gn, Qo, Eclo, Hch, Flp…) siguen funcionando al buscar.
+
 ## 1. ¿Falta texto del PDF en la app? — No
 
 Se comparó **cada línea de cada página** del PDF con el texto de la app (`cobertura.js`).

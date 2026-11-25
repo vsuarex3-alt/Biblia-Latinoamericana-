@@ -194,13 +194,13 @@ Tobías 9:4	pre ocupación → preocupación
 Tobías 12:9	cual quier → cualquier
 Tobías 14:2	des pués → después
 Baruc 6:12	púr pura → púrpura
-Eclesiástico 16:1	im píos → impíos
-Eclesiástico 23:2	pe cados → pecados
-Eclesiástico 23:13	pa labras → palabras
-Eclesiástico 23:20	desapa rezcan → desaparezcan
-Eclesiástico 27:25	cae rá → caerá
-Eclesiástico 46:18	Filis teos → Filisteos
-Eclesiástico 47:24	Jero boam → Jeroboam
+Sirácides 16:1	im píos → impíos
+Sirácides 23:2	pe cados → pecados
+Sirácides 23:13	pa labras → palabras
+Sirácides 23:20	desapa rezcan → desaparezcan
+Sirácides 27:25	cae rá → caerá
+Sirácides 46:18	Filis teos → Filisteos
+Sirácides 47:24	Jero boam → Jeroboam
 Salmos 26:4	hipó critas → hipócritas
 Salmos 26:12	asam bleas → asambleas
 Salmos 31:18	im píos → impíos
@@ -357,24 +357,24 @@ Juan 21:4	pa rado → parado
 Juan 21:6	pes ca → pesca
 Juan 21:6	fuer zas → fuerzas
 Juan 21:15	sa bes → sabes
-Hechos 2:4	Es píritu → Espíritu
-Hechos 10:22	ju díos → judíos
-Hechos 12:3	ju díos → judíos
-Hechos 12:4	Des pués → Después
-Hechos 13:43	ju díos → judíos
-Hechos 16:3	ju díos → judíos
-Hechos 17:1	ju díos → judíos
-Hechos 18:3	vi vir → vivir
-Hechos 18:4	ju díos → judíos
-Hechos 20:3	vol ver → volver
-Hechos 20:6	Fi lipos → Filipos
-Hechos 20:6	des pués → después
-Hechos 20:11	Lue go → Luego
-Hechos 22:30	ju díos → judíos
-Hechos 23:6	fari seos → fariseos
-Hechos 25:12	ha blar → hablar
-Hechos 25:15	ju díos → judíos
-Hechos 27:21	co míamos → comíamos
+Hechos de los apóstoles 2:4	Es píritu → Espíritu
+Hechos de los apóstoles 10:22	ju díos → judíos
+Hechos de los apóstoles 12:3	ju díos → judíos
+Hechos de los apóstoles 12:4	Des pués → Después
+Hechos de los apóstoles 13:43	ju díos → judíos
+Hechos de los apóstoles 16:3	ju díos → judíos
+Hechos de los apóstoles 17:1	ju díos → judíos
+Hechos de los apóstoles 18:3	vi vir → vivir
+Hechos de los apóstoles 18:4	ju díos → judíos
+Hechos de los apóstoles 20:3	vol ver → volver
+Hechos de los apóstoles 20:6	Fi lipos → Filipos
+Hechos de los apóstoles 20:6	des pués → después
+Hechos de los apóstoles 20:11	Lue go → Luego
+Hechos de los apóstoles 22:30	ju díos → judíos
+Hechos de los apóstoles 23:6	fari seos → fariseos
+Hechos de los apóstoles 25:12	ha blar → hablar
+Hechos de los apóstoles 25:15	ju díos → judíos
+Hechos de los apóstoles 27:21	co míamos → comíamos
 Romanos 1:16	ju díos → judíos
 Romanos 9:27	Is rael → Israel
 Romanos 11:1	is raelita → israelita
