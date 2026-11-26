@@ -400,7 +400,8 @@ js = unico(js, "  bindXrefCard();\n  main.querySelectorAll('[data-q]').forEach(b
 js = js + """
 /* ---------- [app] Evangelio del día: abre la página del día en Misal.mx (calendario de México) ---------- */
 function hoyMX(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Mexico_City', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date()); }
-function enlaceMisal(){ return 'https://misal.mx/' + hoyMX(); }
+// [app] la portada de Misal.mx siempre muestra la misa del día; la dirección con fecha («misal.mx/2026-11-26») da «Página no encontrada» mientras no la publican
+function enlaceMisal(){ return 'https://misal.mx/'; }
 function tarjetaEvangelio(){
   return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${esc(dateLong(hoyMX()))}</span><small>Lecturas de la misa según el calendario de México</small></div></button>`;
 }
@@ -409,12 +410,12 @@ function renderEvangelio(){
   main.innerHTML=`<div class="col">
     <div class="evg-head"><span class="fecha">${esc(dateLong(hoyMX()))} · hoy</span><h2>Evangelio del día</h2>
       <div class="santos">Las lecturas de la misa de hoy según el calendario litúrgico de México.</div></div>
-    <a class="evg-card" id="evgAbrir" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Abrir el Evangelio de hoy</span><small>Se abre la página de hoy en Misal.mx (necesita internet)</small></div></a>
+    <a class="evg-card" id="evgAbrir" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Abrir el Evangelio de hoy</span><small>Se abre Misal.mx con las lecturas de hoy (necesita internet). Revisa que la fecha de la página sea la de hoy.</small></div></a>
     <div class="evg-otras"><b style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)">Leerlo en tu Biblia Latinoamericana</b>
       <p class="hint" style="margin:0">Escribe aquí la cita del Evangelio (por ejemplo <i>Lc 21,12-19</i>) para leerla, copiarla y guardarla en tu historial.</p>
       <form class="search" id="evgForm" autocomplete="off" style="box-shadow:none;border:1px solid var(--line)"><input id="evgCita" type="search" enterkeyhint="search" placeholder="Cita del Evangelio de hoy" aria-label="Cita del Evangelio de hoy"><button class="go" type="submit">Leer</button></form>
     </div>
-    <p class="evg-fuente">El enlace abre <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx/${hoyMX()}</a>, un misal diario mexicano. La app no copia su contenido.</p>
+    <p class="evg-fuente">El enlace abre <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a>, un misal diario mexicano. La app no copia su contenido.</p>
   </div>`;
   $('#evgForm').onsubmit=e=>{ e.preventDefault(); const q=$('#evgCita').value.trim(); if(q) runQuery(q, {tidy:true}); };
   window.scrollTo({top:0});
@@ -453,7 +454,7 @@ css_extra_hist = """
 v_ini = js.index('/* ---------- Dictado (reconocimiento de voz del teléfono) ---------- */')
 v_fin = js.index('/* ---------- Guardado local ---------- */')
 js = js[:v_ini] + (pathlib.Path(__file__).parent / 'partes' / 'dictado.js').read_text(encoding='utf8') + js[v_fin:]
-js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (3).")
+js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (4).")
 
 # 11) Modo oscuro (botón)
 js = js + '''
