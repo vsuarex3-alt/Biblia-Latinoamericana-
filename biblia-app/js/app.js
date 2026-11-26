@@ -377,7 +377,7 @@ function renderHome(){
   bindForget();
 }
 function statsHTML(){
-  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (4). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
+  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (5). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
 }
 function bindForget(){
   const f=$('#forget'); if(!f) return;
@@ -1051,20 +1051,23 @@ if(saved){ qEl.value=saved; syncClear(); renderSearch(saved); } else renderHome(
 function hoyMX(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Mexico_City', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date()); }
 // [app] la portada de Misal.mx siempre muestra la misa del día; la dirección con fecha («misal.mx/2026-11-26») da «Página no encontrada» mientras no la publican
 function enlaceMisal(){ return 'https://misal.mx/'; }
+// [app] Evangelio católico oficial: Vatican News (Santa Sede), con el Leccionario de la Conferencia del Episcopado Mexicano
+function enlaceVaticano(){ return 'https://www.vaticannews.va/es/evangelio-de-hoy/' + hoyMX().replace(/-/g,'/') + '.html'; }
 function tarjetaEvangelio(){
-  return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${esc(dateLong(hoyMX()))}</span><small>Lecturas de la misa según el calendario de México</small></div></button>`;
+  return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${esc(dateLong(hoyMX()))}</span><small>Evangelio católico de hoy · Vatican News</small></div></button>`;
 }
 function renderEvangelio(){
   setView('gospel');
   main.innerHTML=`<div class="col">
     <div class="evg-head"><span class="fecha">${esc(dateLong(hoyMX()))} · hoy</span><h2>Evangelio del día</h2>
-      <div class="santos">Las lecturas de la misa de hoy según el calendario litúrgico de México.</div></div>
-    <a class="evg-card" id="evgAbrir" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Abrir el Evangelio de hoy</span><small>Se abre Misal.mx con las lecturas de hoy (necesita internet). Revisa que la fecha de la página sea la de hoy.</small></div></a>
+      <div class="santos">El Evangelio católico de la misa de hoy, de la Santa Sede, con el texto del Leccionario de la Conferencia del Episcopado Mexicano.</div></div>
+    <a class="evg-card" id="evgAbrir" href="${enlaceVaticano()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Evangelio de hoy · Vatican News</b><span>Abrir el Evangelio católico de hoy</span><small>Página oficial de la Santa Sede (necesita internet)</small></div></a>
+    <a class="evg-card" id="evgMisal" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:10px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Todas las lecturas de la misa de hoy</span><small>Misal.mx, calendario litúrgico de México (útil en fiestas mexicanas, como el 12 de diciembre)</small></div></a>
     <div class="evg-otras"><b style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)">Leerlo en tu Biblia Latinoamericana</b>
       <p class="hint" style="margin:0">Escribe aquí la cita del Evangelio (por ejemplo <i>Lc 21,12-19</i>) para leerla, copiarla y guardarla en tu historial.</p>
       <form class="search" id="evgForm" autocomplete="off" style="box-shadow:none;border:1px solid var(--line)"><input id="evgCita" type="search" enterkeyhint="search" placeholder="Cita del Evangelio de hoy" aria-label="Cita del Evangelio de hoy"><button class="go" type="submit">Leer</button></form>
     </div>
-    <p class="evg-fuente">El enlace abre <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a>, un misal diario mexicano. La app no copia su contenido.</p>
+    <p class="evg-fuente">Fuentes: <a href="${enlaceVaticano()}" target="_blank" rel="noopener">Vatican News</a> (Santa Sede; textos del Leccionario de la Conferencia del Episcopado Mexicano) y <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a>. La app no copia su contenido.</p>
   </div>`;
   $('#evgForm').onsubmit=e=>{ e.preventDefault(); const q=$('#evgCita').value.trim(); if(q) runQuery(q, {tidy:true}); };
   window.scrollTo({top:0});
