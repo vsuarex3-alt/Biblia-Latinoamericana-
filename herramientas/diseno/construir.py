@@ -444,6 +444,8 @@ css_extra_hist = """
 .tit-fila .name{flex:1; min-width:0; resize:none; overflow:hidden; line-height:1.15; display:block}
 .btn-guardar{flex:none; display:inline-flex; align-items:center; gap:5px; min-height:36px; margin-top:4px; padding:0 11px; border-radius:999px; border:1.5px solid var(--gold-bright); background:var(--gold-wash); color:var(--ink); font:600 12.5px/1 var(--f-ui); cursor:pointer; white-space:nowrap}
 .btn-guardar:disabled{opacity:.45}
+.day.plegada{padding-bottom:4px}
+.day.plegada header{border-bottom:0}
 .guardada-ok{flex:none; margin-top:12px; font-size:13px; font-weight:700; color:var(--gold); white-space:nowrap}
 """
 
@@ -451,7 +453,7 @@ css_extra_hist = """
 v_ini = js.index('/* ---------- Dictado (reconocimiento de voz del teléfono) ---------- */')
 v_fin = js.index('/* ---------- Guardado local ---------- */')
 js = js[:v_ini] + (pathlib.Path(__file__).parent / 'partes' / 'dictado.js').read_text(encoding='utf8') + js[v_fin:]
-js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (2).")
+js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (3).")
 
 # 11) Modo oscuro (botón)
 js = js + '''
