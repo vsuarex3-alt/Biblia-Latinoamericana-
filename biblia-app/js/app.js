@@ -291,11 +291,13 @@ function renderSearch(q, opts){
     syncClear();
     addRecent(label);
     const blocks=u.refs.map(resolveRef), total=blocks.reduce((a,b)=>a+b.verses.length,0);
-    if(total) Hist.record(label, u.refs);
+    const gGuardado = total ? Hist.record(label, u.refs) : null;   // [app] grupo donde se guardó
     main.innerHTML = `<div class="col">
       <div class="meta"><h2>${esc(label)}</h2><span class="count">${total?fmt(total)+(total===1?' versículo':' versículos'):''}</span></div>
       ${u.spoken ? `<p class="heard">Entendí <i>«${esc(q)}»</i></p>` : ''}
+      ${gGuardado ? `<p class="guardado">Se guardó en <button class="linkbtn" type="button" id="irGrupo">${esc(Hist.nombre(gGuardado))}</button></p>` : ''}
       <div class="results" id="res"></div></div>`;
+    const ig=$('#irGrupo'); if(ig) ig.onclick=()=>renderHistory();
     const res=$('#res');
     if(!total){ const FALTAN={za:[6], '2tm':[4]}; const sinCap=u.refs.find(r=>BYID[r.id] && !getChapter(r.id, r.c1) && (r.c1<=Math.max(...BYID[r.id].chapters.map(x=>x.n)) || (FALTAN[r.id]||[]).includes(r.c1)));
       res.innerHTML = sinCap ? `<div class="empty"><b>Este capítulo no está disponible</b>${esc(bookName(sinCap.id))} ${sinCap.c1} no viene en el PDF del que se tomó el texto de esta app.</div>`
@@ -627,90 +629,88 @@ function passagesFromVerses(label, verses, note){
   return {label, text: verses.map(v=>verses.length>1?`${v.v} ${v.t}`:v.t).join(' '), note, xrefs: XREF ? xrefsForVerses(verses, 8).map(xrefLabel) : []};
 }
 
-/* ---------- Historial por día ---------- */
+/* ---------- [app] Historial por grupos ----------
+   Las citas que se buscan se guardan en el GRUPO ACTIVO (por ejemplo «Clase del 25 de noviembre»)
+   hasta que la persona elige o crea otro grupo. Así las citas de clases distintas no se mezclan.
+   Se guarda solo en este teléfono (localStorage). Los días del historial anterior quedan como grupos. */
 const Hist = (function(){
-  const LKEY='blat-hist';
-  let st = store.get(LKEY, {entries:{}, days:{}});   // copia local (y respaldo si no hay nube)
+  const LKEY='blat-hist', AKEY='blat-grupo';
+  let st = store.get(LKEY, {entries:{}, days:{}});
+  st.entries = st.entries || {}; st.days = st.days || {};
   let recording = store.get('blat-rec', true);
-  let cloud=null;      // {citas, clases} cuando la nube está disponible
+  let activo = store.get(AKEY, null);
   const listeners=[];
   const emit=()=>listeners.forEach(f=>f());
   const saveLocal=()=>store.set(LKEY, st);
-  const dayKey = (d=new Date()) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   const slug = s => norm(s).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,80) || 'cita';
+  const esFecha = id => /^\d{4}-\d{2}-\d{2}$/.test(id);
+  // historial anterior (agrupado por día): cada día queda como un grupo
+  Object.values(st.entries).forEach(e=>{ if(e.day && !st.days[e.day]) st.days[e.day]={}; });
+  Object.keys(st.days).forEach(k=>{ const g=st.days[k]; if(!g.creado) g.creado = esFecha(k) ? new Date(k+'T12:00:00').getTime() : Date.now(); });
+  saveLocal();
+  if(activo && !st.days[activo]) activo=null;
 
-  async function connect(){
-    try{
-      if(!window.claude?.use) return;
-      const [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]);
-      if(!db || !user) return;
-      const uid = await user.id(); if(!uid) return;
-      const root = db.collection('data/users/'+uid).doc('historial');
-      cloud = {citas: root.collection('citas'), clases: root.collection('clases')};
-      let firstC=true, firstD=true;
-      cloud.citas.onSnapshot(snap=>{
-        if(firstC && snap.empty && !snap.metadata.fromCache && Object.keys(st.entries).length){
-          // primera vez con nube: subir lo que había en este navegador
-          Object.entries(st.entries).forEach(([id,e])=>cloud.citas.doc(id).set(e).catch(()=>{}));
-        } else {
-          const ent={}; snap.docs.forEach(d=>{ ent[d.id]=d.data(); }); st.entries=ent; saveLocal(); emit();
-        }
-        firstC=false;
-      }, ()=>{ cloud=null; });
-      cloud.clases.onSnapshot(snap=>{
-        if(firstD && snap.empty && !snap.metadata.fromCache && Object.keys(st.days).length){
-          Object.entries(st.days).forEach(([id,d])=>cloud.clases.doc(id).set(d).catch(()=>{}));
-        } else {
-          const days={}; snap.docs.forEach(d=>{ days[d.id]=d.data(); }); st.days=days; saveLocal(); emit();
-        }
-        firstD=false;
-      }, ()=>{});
-      emit();
-    }catch(e){ cloud=null; }
+  function fechaCorta(ms){ return new Date(ms).toLocaleDateString('es-MX',{day:'numeric', month:'long', year:'numeric'}); }
+  function nombre(id){
+    const g=st.days[id]; if(!g) return '';
+    if(g.name) return g.name;
+    return esFecha(id) ? 'Clase del '+fechaCorta(new Date(id+'T12:00:00').getTime()) : 'Grupo sin nombre';
   }
-  function putEntry(id, e){ st.entries[id]=e; saveLocal(); emit(); if(cloud) cloud.citas.doc(id).set(e).catch(()=>{}); }
+  function crear(nom){
+    let id; do { id='g'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); } while(st.days[id]);   // único aunque se creen dos en el mismo instante
+    st.days[id]={name:(nom||'').trim() || ('Clase del '+fechaCorta(Date.now())), creado:Date.now()};
+    activo=id; store.set(AKEY, id); saveLocal(); emit();
+    return id;
+  }
+  function usar(id){ if(!st.days[id]) return; activo=id; store.set(AKEY, id); emit(); }
   return {
-    connect, on:f=>listeners.push(f), dayKey,
-    get synced(){ return !!cloud; },
+    on:f=>listeners.push(f), connect(){}, get synced(){ return false; },
     get recording(){ return recording; },
     setRecording(v){ recording=v; store.set('blat-rec', v); },
+    get activo(){ return activo && st.days[activo] ? activo : null; },
+    nombre, crear, usar,
+    creado(id){ return st.days[id]?.creado || Date.now(); },
     record(label, refs){
-      if(!recording) return;
-      const day=dayKey(), id=`${day}_${slug(label)}`, prev=st.entries[id];
-      const e={label, refs:JSON.stringify(refs), day, at:Date.now(), note: prev?.note || ''}; if(prev?.guide) e.guide=prev.guide;
-      putEntry(id, e);
+      if(!recording) return null;
+      if(!activo || !st.days[activo]) crear();
+      const id=`${activo}_${slug(label)}`, prev=st.entries[id];
+      st.entries[id]={label, refs:JSON.stringify(refs), day:activo, at:Date.now(), note: prev?.note || ''};
+      saveLocal(); emit();
+      return activo;
     },
-    setNote(id, note){ const e=st.entries[id]; if(!e || e.note===note) return; st.entries[id]={...e, note}; saveLocal(); if(cloud) cloud.citas.doc(id).update({note}).catch(()=>{}); },
-    setDayName(day, name){ const cur=st.days[day]?.name||''; if(cur===name) return; st.days[day]={...(st.days[day]||{}), name}; saveLocal(); if(cloud) cloud.clases.doc(day).set(st.days[day]).catch(()=>{}); },
-    setDayGuide(day, guide){ st.days[day]={...(st.days[day]||{}), guide}; saveLocal(); emit(); if(cloud) cloud.clases.doc(day).set(st.days[day]).catch(()=>{}); },
-    entryFor(label){ return st.entries[`${dayKey()}_${slug(label)}`] || null; },
-    setEntryGuide(label, guide){ const id=`${dayKey()}_${slug(label)}`; const e=st.entries[id]; if(!e) return; st.entries[id]={...e, guide}; saveLocal(); emit(); if(cloud) cloud.citas.doc(id).update({guide}).catch(()=>{}); },
-    setEntryGuideById(id, guide){ const e=st.entries[id]; if(!e) return; st.entries[id]={...e, guide}; saveLocal(); emit(); if(cloud) cloud.citas.doc(id).update({guide}).catch(()=>{}); },
-    removeEntry(id){ delete st.entries[id]; saveLocal(); emit(); if(cloud) cloud.citas.doc(id).delete().catch(()=>{}); },
-    removeDay(day){
-      Object.keys(st.entries).filter(id=>st.entries[id].day===day).forEach(id=>{ delete st.entries[id]; if(cloud) cloud.citas.doc(id).delete().catch(()=>{}); });
-      delete st.days[day]; if(cloud) cloud.clases.doc(day).delete().catch(()=>{});
+    setNote(id, note){ const e=st.entries[id]; if(!e || e.note===note) return; st.entries[id]={...e, note}; saveLocal(); },
+    setDayName(gid, name){ if(!st.days[gid]) return; const n=(name||'').trim(); if((st.days[gid].name||'')===n) return; st.days[gid]={...st.days[gid], name:n}; saveLocal(); emit(); },
+    entryFor(label){ return activo ? (st.entries[`${activo}_${slug(label)}`] || null) : null; },
+    setEntryGuide(){}, setEntryGuideById(){}, setDayGuide(){},
+    removeEntry(id){ delete st.entries[id]; saveLocal(); emit(); },
+    removeDay(gid){
+      Object.keys(st.entries).filter(id=>st.entries[id].day===gid).forEach(id=>{ delete st.entries[id]; });
+      delete st.days[gid];
+      if(activo===gid){ activo=null; store.set(AKEY, null); }
       saveLocal(); emit();
     },
     byDay(){
       const groups={};
+      Object.keys(st.days).forEach(k=>{ groups[k]=[]; });
       Object.entries(st.entries).forEach(([id,e])=>{ (groups[e.day] ||= []).push({id, ...e}); });
-      return Object.keys(groups).sort().reverse().map(day=>({day, name:st.days[day]?.name||'', guide:st.days[day]?.guide||null, items:groups[day].sort((a,b)=>a.at-b.at)}));
+      return Object.keys(groups)
+        .sort((a,b)=> (b===activo)-(a===activo) || (st.days[b]?.creado||0)-(st.days[a]?.creado||0))
+        .map(day=>({day, name:nombre(day), guide:null, items:groups[day].sort((a,b)=>a.at-b.at)}));
     }
   };
 })();
 
 const dateLong = day => { const [y,m,d]=day.split('-').map(Number); const s=new Date(y,m-1,d).toLocaleDateString('es-MX',{weekday:'long', day:'numeric', month:'long', year:'numeric'}); return s.charAt(0).toUpperCase()+s.slice(1); };
 const timeShort = ms => new Date(ms).toLocaleTimeString('es-MX',{hour:'numeric', minute:'2-digit'});
+const fechaHora = ms => { const d=new Date(ms); return d.toLocaleDateString('es-MX',{day:'numeric', month:'short'})+' · '+timeShort(ms); };
 function entryVerses(e){ try{ return JSON.parse(e.refs).flatMap(r=>resolveRef(r).verses); }catch(err){ return []; } }
 function dayText(g){
-  const head = (g.name ? `${g.name} — ` : '') + dateLong(g.day);
   const body = g.items.map(e=>{
     const vs=entryVerses(e);
     const txt = vs.length ? vs.map(v=> vs.length>1 ? `${v.l||v.v} ${v.t}` : v.t).join(' ') : '(texto no disponible)';
-    return `${e.label}\n${txt}${e.note ? `\nNota: ${e.note}` : ''}${e.guide ? `\n\n${guideToText(e.guide)}` : ''}`;
+    return `${e.label}\n${txt}${e.note ? `\nNota: ${e.note}` : ''}`;
   }).join('\n\n');
-  return `${head}\n\n${body}\n${g.guide ? `\n\n${guideToText(g.guide)}\n` : ''}`;
+  return `${Hist.nombre(g.day)}\n\n${body}\n`;
 }
 function armButton(btn, label, action){
   btn.onclick=()=>{
@@ -720,40 +720,49 @@ function armButton(btn, label, action){
   };
 }
 const ICON_X='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
-function renderHistory(){
+function renderHistory(enfocar){
   setView('history');
-  const groups=Hist.byDay();
+  const groups=Hist.byDay(), act=Hist.activo;
   main.innerHTML=`<div class="col">
-    <div class="histhead"><div class="meta"><h2>Historial</h2><span class="count">${groups.length} ${groups.length===1?'día':'días'}</span></div>
-      <p>Cada cita que buscas se guarda aquí, agrupada por día. Ponle nombre a la clase, agrega notas y copia todo para tus apuntes.</p>
-      ${Hist.synced?'<span class="sync"><i></i>Se guarda en tu cuenta: lo ves igual en el celular y en la computadora</span>':'<span class="sync"><i style="background:var(--ink-soft)"></i>Guardado en este teléfono</span>'}
+    <div class="histhead"><div class="meta"><h2>Historial</h2><span class="count">${groups.length} ${groups.length===1?'grupo':'grupos'}</span></div>
+      <p>Cada cita que buscas se guarda en el <b>grupo activo</b>. Crea un grupo para cada clase o tema y cámbialo cuando quieras: las citas no se mezclan.</p>
+      <span class="sync"><i style="background:var(--ink-soft)"></i>Guardado en este teléfono</span>
+    </div>
+    <div class="grupo-activo">
+      <label class="lbl" for="grupoSel">Guardando en</label>
+      <div class="ga-fila">
+        <select id="grupoSel" class="filter">${act?'':'<option value="" selected>— Elige o crea un grupo —</option>'}${groups.map(g=>`<option value="${esc(g.day)}"${g.day===act?' selected':''}>${esc(g.name)}</option>`).join('')}</select>
+        <button class="pill primary" id="grupoNuevo" type="button">+ Nuevo grupo</button>
+      </div>
     </div>
     <div class="recbar"><span>Guardar mis búsquedas de citas</span><button class="switch" id="recSw" role="switch" aria-checked="${Hist.recording}" aria-label="Guardar búsquedas en el historial" type="button"></button></div>
     <div class="days" id="days"></div></div>`;
   $('#recSw').onclick=e=>{ const v=!Hist.recording; Hist.setRecording(v); e.currentTarget.setAttribute('aria-checked', v); toast(v?'El historial está activo':'Pausado: las búsquedas no se guardarán'); };
+  $('#grupoSel').onchange=e=>{ if(e.target.value){ Hist.usar(e.target.value); toast('Ahora se guarda en «'+Hist.nombre(e.target.value)+'»'); } };
+  $('#grupoNuevo').onclick=()=>{ const id=Hist.crear(); toast('Grupo nuevo: «'+Hist.nombre(id)+'». Puedes cambiarle el nombre.'); renderHistory(id); };
   const wrap=$('#days');
-  if(!groups.length){ wrap.innerHTML=`<div class="empty"><b>Aún no hay citas</b>Busca una cita (por ejemplo <button class="linkbtn" data-q="Hch 2,1-4">Hch 2,1-4</button>) y aparecerá aquí con la hora.</div>`; wrap.querySelector('[data-q]').onclick=e=>runQuery(e.target.dataset.q); return; }
+  if(!groups.length){ wrap.innerHTML=`<div class="empty"><b>Aún no hay grupos</b>Toca «+ Nuevo grupo» (por ejemplo, para la clase de hoy) o busca una cita, como <button class="linkbtn" data-q="Hch 2,1-4">Hch 2,1-4</button>, y se creará uno con la fecha de hoy.</div>`; wrap.querySelector('[data-q]').onclick=e=>runQuery(e.target.dataset.q); return; }
   groups.forEach(g=>{
-    const sec=document.createElement('section'); sec.className='day';
+    const esAct = g.day===act;
+    const sec=document.createElement('section'); sec.className='day'+(esAct?' activo':'');
     sec.innerHTML=`<header>
-        <span class="date">${esc(dateLong(g.day))}${g.day===Hist.dayKey()?' · hoy':''}</span>
-        <input class="name" id="name-${g.day}" value="${esc(g.name)}" placeholder="Ponle nombre a la clase…" aria-label="Nombre de la clase" maxlength="80">
+        <span class="date">${esAct?'<span class="badge-activo">● Guardando aquí</span> · ':''}Creado el ${esc(new Date(Hist.creado(g.day)).toLocaleDateString('es-MX',{day:'numeric', month:'long', year:'numeric'}))}</span>
+        <input class="name" value="${esc(g.name)}" placeholder="Nombre del grupo…" aria-label="Nombre del grupo" maxlength="80">
         <div class="dacts"><span class="cnt">${g.items.length} ${g.items.length===1?'cita':'citas'}</span>
-          <button class="pill primary" type="button" data-a="copyall">${ICON_COPY}Copiar todo</button>
-          ${guideOK()||g.guide?`<button class="pill" type="button" data-a="dguide">${ICON_GUIDE}${g.guide?'Ver guía':'Guía de la clase'}</button>`:''}
-          <button class="pill danger" type="button" data-a="delday">Borrar día</button></div>
+          ${esAct?'':'<button class="pill" type="button" data-a="usar">Guardar aquí</button>'}
+          <button class="pill primary" type="button" data-a="copyall"${g.items.length?'':' disabled'}>${ICON_COPY}Copiar todo</button>
+          <button class="pill danger" type="button" data-a="delday">Borrar</button></div>
       </header>`;
+    if(!g.items.length){ const v=document.createElement('p'); v.className='vacio-grupo'; v.textContent= esAct ? 'Todavía no hay citas. Las que busques se guardarán aquí.' : 'Sin citas.'; sec.appendChild(v); }
     g.items.forEach(e=>{
       const vs=entryVerses(e), preview=vs.map(v=>v.t).join(' ');
       const row=document.createElement('div'); row.className='entry';
-      row.innerHTML=`<time>${esc(timeShort(e.at))}</time>
+      row.innerHTML=`<time>${esc(fechaHora(e.at))}</time>
         <button class="eref" type="button">${esc(e.label)}</button>
         <button class="del" type="button" aria-label="Borrar ${esc(e.label)}">${ICON_X}</button>
         ${preview?`<p class="prev">${esc(preview)}</p>`:''}
-        <textarea class="note" rows="1" id="note-${esc(e.id)}" placeholder="Agregar nota…" aria-label="Nota para ${esc(e.label)}" maxlength="2000">${esc(e.note||'')}</textarea>
-        ${e.guide?`<details class="saved-guide eguide"><summary>${ICON_GUIDE}Guía de estudio</summary>${guideHTML(e.guide)}</details>`:''}`;
+        <textarea class="note" rows="1" placeholder="Agregar nota…" aria-label="Nota para ${esc(e.label)}" maxlength="2000">${esc(e.note||'')}</textarea>`;
       row.querySelector('.eref').onclick=()=>runQuery(e.label);
-      bindXref(row);
       armButton(row.querySelector('.del'), 'Borrar', ()=>{ Hist.removeEntry(e.id); toast('Cita borrada'); });
       const ta=row.querySelector('.note'); let tmr;
       const save=()=>{ clearTimeout(tmr); Hist.setNote(e.id, ta.value.trim()); };
@@ -762,23 +771,19 @@ function renderHistory(){
       sec.appendChild(row);
     });
     const nm=sec.querySelector('.name');
-    nm.addEventListener('change', ()=>Hist.setDayName(g.day, nm.value.trim()));
+    nm.addEventListener('change', ()=>{ Hist.setDayName(g.day, nm.value); });
     nm.addEventListener('keydown', ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); nm.blur(); } });
-    sec.querySelector('[data-a=copyall]').onclick=()=>{ const cur=Hist.byDay().find(x=>x.day===g.day); if(cur) copyText(dayText(cur), {show:true, title:(cur.name||dateLong(cur.day)), label:`Copiadas ${cur.items.length} citas`}); };
-    armButton(sec.querySelector('[data-a=delday]'), 'Toca otra vez para borrar el día', ()=>{ Hist.removeDay(g.day); toast('Día borrado'); });
-    const dg=sec.querySelector('[data-a=dguide]');
-    if(dg) dg.onclick=()=>{
-      const cur=Hist.byDay().find(x=>x.day===g.day); if(!cur) return;
-      const title=cur.name || `Clase del ${dateLong(cur.day)}`;
-      openGuide({title, passages:cur.items.map(e=>passagesFromVerses(e.label, entryVerses(e), e.note)), saved:cur.guide, onSave:gd=>Hist.setDayGuide(cur.day, gd)});
-    };
+    const us=sec.querySelector('[data-a=usar]'); if(us) us.onclick=()=>{ Hist.usar(g.day); toast('Ahora se guarda en «'+Hist.nombre(g.day)+'»'); };
+    sec.querySelector('[data-a=copyall]').onclick=()=>{ const cur=Hist.byDay().find(x=>x.day===g.day); if(cur && cur.items.length) copyText(dayText(cur), {show:true, title:cur.name, label:`Copiadas ${cur.items.length} citas`}); };
+    armButton(sec.querySelector('[data-a=delday]'), 'Toca otra vez para borrar el grupo', ()=>{ Hist.removeDay(g.day); toast('Grupo borrado'); });
     wrap.appendChild(sec);
+    if(enfocar===g.day) setTimeout(()=>{ nm.focus(); nm.select(); }, 50);
   });
   wrap.querySelectorAll('.note').forEach(ta=>{ if(ta.value){ ta.style.height=ta.scrollHeight+'px'; } });
 }
-// re-pintar cuando llegan cambios (sin interrumpir si se está escribiendo una nota o un nombre)
-Hist.on(()=>{ const a=document.activeElement; const typing=a && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.closest('.day'); if(view==='history' && !typing) renderHistory(); });
-Hist.connect();
+// re-pintar cuando cambia algo (sin interrumpir si se está escribiendo una nota o un nombre)
+Hist.on(()=>{ const a=document.activeElement; const typing=a && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName) && a.closest('.col'); if(view==='history' && !typing) renderHistory(); });
+
 
 /* ---------- Buscador: sugerencias, borrar, enviar ---------- */
 const qEl=$('#q'), sugg=$('#suggest');

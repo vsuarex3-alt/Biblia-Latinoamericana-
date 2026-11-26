@@ -422,6 +422,27 @@ function renderEvangelio(){
 $('#tabEvg').onclick=renderEvangelio;
 """
 
+# 22) Historial por grupos: las citas se guardan en el grupo activo hasta que se elige otro
+h_ini = js.index('/* ---------- Historial por día ---------- */')
+h_fin = js.index('Hist.connect();', h_ini) + len('Hist.connect();')
+js = js[:h_ini] + (pathlib.Path(__file__).parent / 'partes' / 'historial.js').read_text(encoding='utf8') + js[h_fin:]
+js = unico(js, "    if(total) Hist.record(label, u.refs);", "    const gGuardado = total ? Hist.record(label, u.refs) : null;   // [app] grupo donde se guardó")
+js = unico(js, "      ${u.spoken ? `<p class=\"heard\">Entendí <i>«${esc(q)}»</i></p>` : ''}\n      <div class=\"results\" id=\"res\"></div></div>`;",
+  "      ${u.spoken ? `<p class=\"heard\">Entendí <i>«${esc(q)}»</i></p>` : ''}\n      ${gGuardado ? `<p class=\"guardado\">Se guardó en <button class=\"linkbtn\" type=\"button\" id=\"irGrupo\">${esc(Hist.nombre(gGuardado))}</button></p>` : ''}\n      <div class=\"results\" id=\"res\"></div></div>`;\n    const ig=$('#irGrupo'); if(ig) ig.onclick=()=>renderHistory();")
+css_extra_hist = """
+/* ---------- Historial por grupos ---------- */
+.grupo-activo{background:var(--leaf); border:1.5px solid var(--gold-bright); border-radius:14px; padding:12px 14px; margin-top:14px}
+.grupo-activo .lbl{display:block; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:6px}
+.ga-fila{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.ga-fila select{flex:1 1 200px; min-height:44px; font-size:16px; font-weight:600}
+.day.activo{border-color:var(--gold-bright); box-shadow:0 0 0 1.5px var(--gold-bright)}
+.badge-activo{color:var(--forest); background:var(--gold-wash); border-radius:999px; padding:2px 8px; letter-spacing:.04em}
+:root[data-theme="dark"] .badge-activo{color:var(--gold-bright)}
+.vacio-grupo{padding:12px 18px; margin:0; color:var(--ink-soft); font-size:14px}
+.guardado{font-size:13px; color:var(--ink-soft); margin:-2px 0 8px}
+.pill:disabled{opacity:.45}
+"""
+
 # 11) Modo oscuro (botón)
 js = js + '''
 /* ---------- [app] Modo claro / oscuro ---------- */
@@ -431,5 +452,6 @@ const colorBarra=()=>document.querySelector('meta[name="theme-color"]').setAttri
 temaBtn.onclick=()=>{ const t=temaActual()==='dark'?'light':'dark'; document.documentElement.dataset.theme=t; store.set('blat-tema', t); colorBarra(); toast(t==='dark'?'Modo oscuro':'Modo claro'); };
 colorBarra();
 '''
+(app / 'css' / 'estilos.css').write_text((app / 'css' / 'estilos.css').read_text(encoding='utf8') + css_extra_hist, encoding='utf8')
 (app / 'js' / 'app.js').write_text('(function(){\n' + js + '\n})();\n', encoding='utf8')
 print('listo:', app)
