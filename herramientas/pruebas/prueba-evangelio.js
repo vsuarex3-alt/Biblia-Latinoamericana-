@@ -16,7 +16,7 @@ const fs = require('fs'), path = require('path');
   await p.click('#tabEvg'); await p.waitForSelector('#evgRef');
   const txt = await p.textContent('#main .hit .txt');
   ver(txt && txt.length > 100, 'el Evangelio aparece completo en la pestaña: «' + txt.replace(/\s+/g, ' ').slice(0, 70) + '…»');
-  ver(await p.locator('.evg-otra[data-q]').count() >= 2, 'aparecen la primera lectura y el salmo');
+  ver(await p.locator('.evg-otra[data-q]').count() >= 1, 'aparecen las otras lecturas del día');
   if (process.argv[2]) await p.screenshot({ path: process.argv[2], fullPage: true });
   await p.click('#evgGuardar'); await p.waitForTimeout(200);
   const hist = await p.evaluate(() => JSON.parse(localStorage.getItem('blat-hist') || '{}'));

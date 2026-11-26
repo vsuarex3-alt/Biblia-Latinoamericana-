@@ -1,11 +1,11 @@
 # Autorizado por la dueña/dueño del repositorio: lee en misal.mx SOLO las citas de las lecturas del día
 # (misal.mx permite visitas automáticas en su robots.txt) y las guarda en biblia-app/evangelio.json.
+# Si misal.mx no ha publicado el día, usa Vatican News (mismo Leccionario mexicano) hasta que misal.mx lo publique.
 # Corre unas pocas veces al día (horas en UTC; México = UTC-6). Si la cita cambió, la sube y se publica la app.
 name: Evangelio del día
 on:
   schedule:
-    - cron: '7 6-14/2 * * *'   # de madrugada y en la mañana de México, cada 2 horas
-    - cron: '37 18,23 * * *'   # y dos veces más en la tarde/noche
+    - cron: '23 * * * *'       # cada hora (GitHub a veces se salta corridas; así no se queda sin actualizar)
   workflow_dispatch:
 permissions:
   contents: write

@@ -443,7 +443,7 @@ function renderEvangelio(){
         ${d&&d.santos?`<div class="santos">${esc(d.santos)}</div>`:''}</div>
       ${cuerpo}
       <a class="evg-otra" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px;color:inherit"><div><b>Misal diario de México</b><span>Ver todas las oraciones y lecturas en Misal.mx</span></div><span aria-hidden="true">›</span></a>
-      <p class="evg-fuente">Las citas del día se toman de <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a> (calendario litúrgico de México). El texto es el de tu Biblia Latinoamericana; la numeración de algunos versículos puede variar un poco respecto al leccionario.</p>
+      <p class="evg-fuente">${d&&d.fuente==='vaticannews.va' ? `Misal.mx aún no publica las lecturas de hoy; la cita se tomó de <a href="${enlaceVaticano()}" target="_blank" rel="noopener">Vatican News</a> (Santa Sede, Leccionario de la Conferencia del Episcopado Mexicano).` : `Las citas del día se toman de <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a> (calendario litúrgico de México).`} El texto es el de tu Biblia Latinoamericana; la numeración de algunos versículos puede variar un poco respecto al leccionario.</p>
     </div>`;
   };
   pintar(); window.scrollTo({top:0});
@@ -484,7 +484,7 @@ css_extra_hist = """
 v_ini = js.index('/* ---------- Dictado (reconocimiento de voz del teléfono) ---------- */')
 v_fin = js.index('/* ---------- Guardado local ---------- */')
 js = js[:v_ini] + (pathlib.Path(__file__).parent / 'partes' / 'dictado.js').read_text(encoding='utf8') + js[v_fin:]
-js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (6).")
+js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (7).")
 
 # 11) Modo oscuro (botón)
 js = js + '''

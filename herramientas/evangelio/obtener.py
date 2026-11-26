@@ -41,15 +41,19 @@ def cita(linea):
     return f'{libro} {nums}'
 
 def para_app(c):
-    """«Mateo 9, 35–10, 1. 5-8» → «Mateo 9,35-10,1; Mateo 10,5-8» (forma que entiende el buscador de la app)"""
+    """«Mateo 9, 35–10, 1. 5-8» → «Mateo 9,35-10,1; Mateo 10,5-8»;
+       «Apocalipsis 18,1-2. 21-23; 19,1-3. 9a» → «Apocalipsis 18,1-2; Apocalipsis 18,21-23; Apocalipsis 19,1-3; Apocalipsis 19,9»"""
+    c = c.replace('\u03af', 'í').replace('\u03ad', 'é').replace('\u03cc', 'ó')   # letras griegas que a veces vienen en vez de acentos
     m = re.match(r'^(.*?\D)\s(\d.*)$', c)
     if not m: return c
     libro, nums = m.group(1).strip(), re.sub(r'(\d)[a-d]\b', r'\1', m.group(2)).replace('–', '-').replace('—', '-')
     partes, cap = [], None
-    for seg in [x.strip() for x in re.split(r'\.\s*', nums) if x.strip()]:
+    for seg in [x.strip() for x in re.split(r'\.\s*|;\s*', nums) if x.strip()]:
         seg = re.sub(r'\s+', '', seg)
         x = re.fullmatch(r'(\d+),(\d+)-(\d+),(\d+)', seg)          # 9,35-10,1
         if x: partes.append(f'{x[1]},{x[2]}-{x[3]},{x[4]}'); cap = x[3]; continue
+        x = re.fullmatch(r'(\d+)-(\d+),(\d+)', seg)                 # 11-21,2 (del versículo 11 al capítulo 21, versículo 2)
+        if x and cap: partes.append(f'{cap},{x[1]}-{x[2]},{x[3]}'); cap = x[2]; continue
         x = re.fullmatch(r'(\d+),(\d+(?:-\d+)?)', seg)               # 21,12-19
         if x: cap = x[1]; partes.append(f'{cap},{x[2]}'); continue
         x = re.fullmatch(r'\d+(?:-\d+)?', seg)                       # 17-18 (mismo capítulo)
@@ -90,30 +94,74 @@ def leer(pagina):
     santos = next((L[i + 1].lstrip(': ').strip() for i, l in enumerate(L) if l == 'Santos' and i + 1 < len(L)), '')
     return fecha, out, santos
 
-def main():
-    if len(sys.argv) > 1:
-        pagina = pathlib.Path(sys.argv[1]).read_text(encoding='utf8', errors='ignore')
-    else:
-        req = urllib.request.Request('https://misal.mx/', headers={'User-Agent': 'Mozilla/5.0 (Biblia Latinoamericana app; lectura diaria de la cita del Evangelio)'})
-        pagina = urllib.request.urlopen(req, timeout=30).read().decode('utf8', 'ignore')
-    fecha, lect, santos = leer(pagina)
-    if not fecha or 'evangelio' not in lect:
-        print('No se encontró la fecha o el Evangelio en la página; no se cambia nada.'); return 1
-    datos = json.loads(SALIDA.read_text(encoding='utf8')) if SALIDA.exists() else {'fuente': 'misal.mx', 'dias': {}}
+UA = {'User-Agent': 'Mozilla/5.0 (Biblia Latinoamericana app; lectura diaria de la cita del Evangelio)'}
+def bajar(url):
+    return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read().decode('utf8', 'ignore')
+
+def hoy_mexico(mas=0):
+    from zoneinfo import ZoneInfo
+    return (datetime.datetime.now(ZoneInfo('America/Mexico_City')) + datetime.timedelta(days=mas)).strftime('%Y-%m-%d')
+
+ES_CITA = re.compile(r'^((?:[1-3]\s)?[^\d,:]{3,40}?)\s(\d+\s*,\s*\d.*)$')
+def leer_vaticano(pagina):
+    """Respaldo cuando misal.mx no ha publicado el día: Vatican News (Santa Sede) usa el Leccionario de la
+       Conferencia del Episcopado Mexicano. Solo se toman las citas."""
+    L = texto_de(pagina); out = {}
+    def siguiente_cita(i, hasta=6):
+        for l in L[i + 1:i + 1 + hasta]:
+            if len(l) < 90 and ES_CITA.match(l): return l.rstrip('.')
+        return None
+    for i, l in enumerate(L):
+        if l == 'Lectura del Día' and 'primera' not in out:
+            c = siguiente_cita(i); out['primera'] = c if c else None
+        elif l == 'Segunda lectura' and 'segunda' not in out:
+            c = siguiente_cita(i, 2); out['segunda'] = c
+        elif l == 'Evangelio del Día' and 'evangelio' not in out:
+            out['evangelio'] = siguiente_cita(i)
+    return {k: v for k, v in out.items() if v}
+
+def armar(lect, santos=''):
     dia = {}
     for k in ('evangelio', 'primera', 'segunda'):
-        if k in lect: dia[k] = {'cita': lect[k], 'app': para_app(lect[k])}
+        if k in lect: dia[k] = {'cita': lect[k].replace('\u03af', 'í'), 'app': para_app(lect[k])}
     if 'salmo' in lect:
         n = int(lect['salmo'].split()[-1]); h = salmo_hebreo(n)
         dia['salmo'] = {'cita': lect['salmo'], 'app': f'Salmos {h}', 'ver': f'Salmo {h}' + (f' ({n})' if h != n else '')}
     if santos: dia['santos'] = santos
-    if datos['dias'].get(fecha) == dia:
-        print('Sin cambios:', fecha, dia['evangelio']['cita']); return 0
-    datos['dias'][fecha] = dia
-    # se guardan solo los últimos 40 días
-    datos['dias'] = dict(sorted(datos['dias'].items())[-40:])
+    return dia
+
+def main():
+    datos = json.loads(SALIDA.read_text(encoding='utf8')) if SALIDA.exists() else {'fuente': 'misal.mx', 'dias': {}}
+    antes = json.dumps(datos, sort_keys=True)
+    # 1) misal.mx (fuente principal: calendario litúrgico de México)
+    try:
+        pagina = pathlib.Path(sys.argv[1]).read_text(encoding='utf8', errors='ignore') if len(sys.argv) > 1 else bajar('https://misal.mx/')
+        fecha, lect, santos = leer(pagina)
+        if fecha and 'evangelio' in lect:
+            dia = armar(lect, santos); dia['fuente'] = 'misal.mx'
+            datos['dias'][fecha] = dia
+            print('misal.mx:', fecha, dia['evangelio']['cita'])
+        else:
+            print('misal.mx: no se encontró el Evangelio en la página')
+    except Exception as e:
+        print('misal.mx no respondió:', e)
+    # 2) Si misal.mx todavía no publica hoy (o mañana), se usa Vatican News; misal.mx lo reemplaza cuando publique
+    if len(sys.argv) == 1:
+        for f in (hoy_mexico(), hoy_mexico(1)):
+            if datos['dias'].get(f, {}).get('fuente') == 'misal.mx': continue
+            try:
+                lect = leer_vaticano(bajar('https://www.vaticannews.va/es/evangelio-de-hoy/' + f.replace('-', '/') + '.html'))
+            except Exception as e:
+                print('Vatican News no respondió para', f, e); continue
+            if 'evangelio' not in lect: print('Vatican News: aún no está', f); continue
+            dia = armar(lect); dia['fuente'] = 'vaticannews.va'
+            datos['dias'][f] = dia
+            print('Vatican News:', f, dia['evangelio']['cita'])
+    datos['dias'] = dict(sorted(datos['dias'].items())[-40:])   # solo los últimos 40 días
+    if json.dumps(datos, sort_keys=True) == antes:
+        print('Sin cambios'); return 0
     SALIDA.write_text(json.dumps(datos, ensure_ascii=False, indent=1) + '\n', encoding='utf8')
-    print('Guardado:', fecha, dia)
+    print('Guardado')
     return 0
 
 if __name__ == '__main__':

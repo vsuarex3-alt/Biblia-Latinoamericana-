@@ -377,7 +377,7 @@ function renderHome(){
   bindForget();
 }
 function statsHTML(){
-  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (6). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
+  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (7). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
 }
 function bindForget(){
   const f=$('#forget'); if(!f) return;
@@ -1093,7 +1093,7 @@ ${citeText(vs)}`);
         ${d&&d.santos?`<div class="santos">${esc(d.santos)}</div>`:''}</div>
       ${cuerpo}
       <a class="evg-otra" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px;color:inherit"><div><b>Misal diario de México</b><span>Ver todas las oraciones y lecturas en Misal.mx</span></div><span aria-hidden="true">›</span></a>
-      <p class="evg-fuente">Las citas del día se toman de <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a> (calendario litúrgico de México). El texto es el de tu Biblia Latinoamericana; la numeración de algunos versículos puede variar un poco respecto al leccionario.</p>
+      <p class="evg-fuente">${d&&d.fuente==='vaticannews.va' ? `Misal.mx aún no publica las lecturas de hoy; la cita se tomó de <a href="${enlaceVaticano()}" target="_blank" rel="noopener">Vatican News</a> (Santa Sede, Leccionario de la Conferencia del Episcopado Mexicano).` : `Las citas del día se toman de <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a> (calendario litúrgico de México).`} El texto es el de tu Biblia Latinoamericana; la numeración de algunos versículos puede variar un poco respecto al leccionario.</p>
     </div>`;
   };
   pintar(); window.scrollTo({top:0});

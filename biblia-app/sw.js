@@ -1,7 +1,7 @@
 /* ===== Service worker: guarda la app en el teléfono para usarla sin internet =====
    Cuando cambies cualquier archivo (por ejemplo el texto), sube el número de VERSION
    para que los teléfonos descarguen la versión nueva. */
-var VERSION = 'biblia-v24';
+var VERSION = 'biblia-v25';
 // El reconocedor de voz (carpeta voz/, unos 115 MB) se guarda aparte y no se borra al actualizar la app.
 // Si algún día cambian esos archivos, sube este número.
 var VOZ = 'biblia-voz-1';
