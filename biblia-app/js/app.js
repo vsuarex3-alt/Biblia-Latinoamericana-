@@ -377,7 +377,7 @@ function renderHome(){
   bindForget();
 }
 function statsHTML(){
-  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026. Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
+  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (2). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
 }
 function bindForget(){
   const f=$('#forget'); if(!f) return;
@@ -662,13 +662,15 @@ const Hist = (function(){
     activo=id; store.set(AKEY, id); saveLocal(); emit();
     return id;
   }
-  function usar(id){ if(!st.days[id]) return; activo=id; store.set(AKEY, id); emit(); }
+  function usar(id){ if(!st.days[id]) return; if(st.days[id].guardada){ st.days[id]={...st.days[id]}; delete st.days[id].guardada; saveLocal(); } activo=id; store.set(AKEY, id); emit(); }
+  // «Guardar clase»: la clase queda guardada tal cual y la siguiente cita empieza una clase nueva
+  function guardar(id){ if(!st.days[id]) return; st.days[id]={...st.days[id], guardada:Date.now()}; if(activo===id){ activo=null; store.set(AKEY, null); } saveLocal(); emit(); }
   return {
     on:f=>listeners.push(f), connect(){}, get synced(){ return false; },
     get recording(){ return recording; },
     setRecording(v){ recording=v; store.set('blat-rec', v); },
     get activo(){ return activo && st.days[activo] ? activo : null; },
-    nombre, crear, usar,
+    nombre, crear, usar, guardar, guardada(id){ return !!st.days[id]?.guardada; },
     creado(id){ return st.days[id]?.creado || Date.now(); },
     record(label, refs){
       if(!recording) return null;
@@ -719,6 +721,7 @@ function armButton(btn, label, action){
     setTimeout(()=>{ if(btn.isConnected){ delete btn.dataset.armed; btn.classList.remove('armed'); btn.innerHTML=old; } }, 3500);
   };
 }
+const ICON_GUARDAR='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg>';
 const ICON_X='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
 function renderHistory(enfocar){
   setView('history');
@@ -747,9 +750,10 @@ function renderHistory(enfocar){
     const sec=document.createElement('section'); sec.className='day'+(esAct?' activo':'');
     sec.innerHTML=`<header>
         <span class="date">${esAct?'<span class="badge-activo">● Guardando aquí</span> · ':''}Creado el ${esc(new Date(Hist.creado(g.day)).toLocaleDateString('es-MX',{day:'numeric', month:'long', year:'numeric'}))}</span>
-        <input class="name" value="${esc(g.name)}" placeholder="Nombre del grupo…" aria-label="Nombre del grupo" maxlength="80">
+        <div class="tit-fila"><textarea class="name" rows="1" placeholder="Nombre del grupo…" aria-label="Nombre del grupo" maxlength="80">${esc(g.name)}</textarea>
+          ${Hist.guardada(g.day) ? '<span class="guardada-ok" title="Clase guardada">✓ Guardada</span>' : `<button class="btn-guardar" type="button" data-a="guardar" aria-label="Guardar clase"${g.items.length?'':' disabled'}>${ICON_GUARDAR}<span>Guardar</span></button>`}</div>
         <div class="dacts"><span class="cnt">${g.items.length} ${g.items.length===1?'cita':'citas'}</span>
-          ${esAct?'':'<button class="pill" type="button" data-a="usar">Guardar aquí</button>'}
+          ${esAct?'':`<button class="pill" type="button" data-a="usar">${Hist.guardada(g.day)?'Seguir esta clase':'Guardar aquí'}</button>`}
           <button class="pill primary" type="button" data-a="copyall"${g.items.length?'':' disabled'}>${ICON_COPY}Copiar todo</button>
           <button class="pill danger" type="button" data-a="delday">Borrar</button></div>
       </header>`;
@@ -772,7 +776,9 @@ function renderHistory(enfocar){
     });
     const nm=sec.querySelector('.name');
     nm.addEventListener('change', ()=>{ Hist.setDayName(g.day, nm.value); });
+    const alto=()=>{ nm.style.height='auto'; nm.style.height=nm.scrollHeight+'px'; }; nm.addEventListener('input', alto); requestAnimationFrame(alto);
     nm.addEventListener('keydown', ev=>{ if(ev.key==='Enter'){ ev.preventDefault(); nm.blur(); } });
+    const gb=sec.querySelector('[data-a=guardar]'); if(gb) gb.onclick=()=>{ Hist.setDayName(g.day, nm.value); Hist.guardar(g.day); toast('Clase guardada: «'+Hist.nombre(g.day)+'». La próxima cita empezará una clase nueva.'); renderHistory(); };
     const us=sec.querySelector('[data-a=usar]'); if(us) us.onclick=()=>{ Hist.usar(g.day); toast('Ahora se guarda en «'+Hist.nombre(g.day)+'»'); };
     sec.querySelector('[data-a=copyall]').onclick=()=>{ const cur=Hist.byDay().find(x=>x.day===g.day); if(cur && cur.items.length) copyText(dayText(cur), {show:true, title:cur.name, label:`Copiadas ${cur.items.length} citas`}); };
     armButton(sec.querySelector('[data-a=delday]'), 'Toca otra vez para borrar el grupo', ()=>{ Hist.removeDay(g.day); toast('Grupo borrado'); });

@@ -436,18 +436,22 @@ css_extra_hist = """
 .ga-fila{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 .ga-fila select{flex:1 1 200px; min-height:44px; font-size:16px; font-weight:600}
 .day.activo{border-color:var(--gold-bright); box-shadow:0 0 0 1.5px var(--gold-bright)}
-.badge-activo{color:var(--forest); background:var(--gold-wash); border-radius:999px; padding:2px 8px; letter-spacing:.04em}
-:root[data-theme="dark"] .badge-activo{color:var(--gold-bright)}
+.badge-activo{color:var(--ink); background:var(--gold-wash); border-radius:999px; padding:2px 8px; letter-spacing:.04em}
 .vacio-grupo{padding:12px 18px; margin:0; color:var(--ink-soft); font-size:14px}
 .guardado{font-size:13px; color:var(--ink-soft); margin:-2px 0 8px}
 .pill:disabled{opacity:.45}
+.tit-fila{display:flex; align-items:flex-start; gap:10px}
+.tit-fila .name{flex:1; min-width:0; resize:none; overflow:hidden; line-height:1.15; display:block}
+.btn-guardar{flex:none; display:inline-flex; align-items:center; gap:5px; min-height:36px; margin-top:4px; padding:0 11px; border-radius:999px; border:1.5px solid var(--gold-bright); background:var(--gold-wash); color:var(--ink); font:600 12.5px/1 var(--f-ui); cursor:pointer; white-space:nowrap}
+.btn-guardar:disabled{opacity:.45}
+.guardada-ok{flex:none; margin-top:12px; font-size:13px; font-weight:700; color:var(--gold); white-space:nowrap}
 """
 
 # 23) Micrófono que funciona también en iPhone: graba y entiende la voz dentro del teléfono (voz/)
 v_ini = js.index('/* ---------- Dictado (reconocimiento de voz del teléfono) ---------- */')
 v_fin = js.index('/* ---------- Guardado local ---------- */')
 js = js[:v_ini] + (pathlib.Path(__file__).parent / 'partes' / 'dictado.js').read_text(encoding='utf8') + js[v_fin:]
-js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026.")
+js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026 (2).")
 
 # 11) Modo oscuro (botón)
 js = js + '''
