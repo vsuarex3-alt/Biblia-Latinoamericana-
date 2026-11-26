@@ -1,7 +1,10 @@
 /* ===== Service worker: guarda la app en el teléfono para usarla sin internet =====
    Cuando cambies cualquier archivo (por ejemplo el texto), sube el número de VERSION
    para que los teléfonos descarguen la versión nueva. */
-var VERSION = 'biblia-v18';
+var VERSION = 'biblia-v19';
+// El reconocedor de voz (carpeta voz/, unos 115 MB) se guarda aparte y no se borra al actualizar la app.
+// Si algún día cambian esos archivos, sube este número.
+var VOZ = 'biblia-voz-1';
 
 var ARCHIVOS = [
   './',
@@ -44,7 +47,7 @@ self.addEventListener('install', function (e) {
 self.addEventListener('activate', function (e) {
   e.waitUntil(
     caches.keys().then(function (claves) {
-      return Promise.all(claves.filter(function (k) { return k !== VERSION; })
+      return Promise.all(claves.filter(function (k) { return k !== VERSION && k !== VOZ; })
         .map(function (k) { return caches.delete(k); }));
     }).then(function () { return self.clients.claim(); })
   );
@@ -55,6 +58,19 @@ self.addEventListener('activate', function (e) {
 self.addEventListener('fetch', function (e) {
   var req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
+
+  // Reconocedor de voz: primero la copia guardada; solo se descarga la primera vez
+  if (new URL(req.url).pathname.indexOf('/voz/') !== -1) {
+    e.respondWith(caches.open(VOZ).then(function (cache) {
+      return cache.match(req, { ignoreSearch: true }).then(function (r) {
+        return r || fetch(req).then(function (resp) {
+          if (resp && resp.ok && resp.status === 200) cache.put(req, resp.clone());
+          return resp;
+        });
+      });
+    }));
+    return;
+  }
 
   e.respondWith(
     caches.open(VERSION).then(function (cache) {

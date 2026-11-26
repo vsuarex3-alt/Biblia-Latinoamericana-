@@ -443,6 +443,12 @@ css_extra_hist = """
 .pill:disabled{opacity:.45}
 """
 
+# 23) Micrófono que funciona también en iPhone: graba y entiende la voz dentro del teléfono (voz/)
+v_ini = js.index('/* ---------- Dictado (reconocimiento de voz del teléfono) ---------- */')
+v_fin = js.index('/* ---------- Guardado local ---------- */')
+js = js[:v_ini] + (pathlib.Path(__file__).parent / 'partes' / 'dictado.js').read_text(encoding='utf8') + js[v_fin:]
+js = unico(js, "Versión del 25 de noviembre de 2026.", "Versión del 26 de noviembre de 2026.")
+
 # 11) Modo oscuro (botón)
 js = js + '''
 /* ---------- [app] Modo claro / oscuro ---------- */

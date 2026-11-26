@@ -1,0 +1,7 @@
+Reconocedor de voz del botón de micrófono (funciona dentro del teléfono, sin enviar la voz a internet).
+
+- transformers.min.js, ort-wasm-simd-threaded.jsep.mjs/.wasm: Transformers.js 3.8.1 (Hugging Face, licencia Apache-2.0)
+  con ONNX Runtime Web (Microsoft, licencia MIT).
+- modelo/: Whisper «base» de OpenAI (licencia MIT), versión ONNX de onnx-community/whisper-base (Apache-2.0):
+  encoder_model_fp16.onnx y decoder_model_merged_quantized.onnx.
+- voz.js: carga el modelo y convierte la voz en texto; le da como pista la lista de libros de la Biblia.
