@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # cuando «Evangelio del día» sube una cita nueva, se vuelve a publicar la app
+  workflow_run:
+    workflows: ["Evangelio del día"]
+    types: [completed]
 permissions:
   contents: read
   pages: write
@@ -13,6 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   preparar:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
