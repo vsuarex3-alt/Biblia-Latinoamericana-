@@ -1,0 +1,21 @@
+{
+ "fuente": "misal.mx",
+ "dias": {
+  "2026-11-25": {
+   "evangelio": {
+    "cita": "Lucas 21, 12-19",
+    "app": "Lucas 21,12-19"
+   },
+   "primera": {
+    "cita": "Apocalipsis 15, 1-4",
+    "app": "Apocalipsis 15,1-4"
+   },
+   "salmo": {
+    "cita": "Salmo 97",
+    "app": "Salmos 98",
+    "ver": "Salmo 98 (97)"
+   },
+   "santos": "San Leonardo de Puerto Mauricio, San Pedro de Alejandría & Santa Catalina de Alejandría"
+  }
+ }
+}

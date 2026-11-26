@@ -377,7 +377,7 @@ function renderHome(){
   bindForget();
 }
 function statsHTML(){
-  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (5). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
+  return `<div class="foot"><b>La Biblia Latinoamericana</b>: ${BIBLE.books.length} libros y ${fmt(FLAT.length)} versículos. Funciona sin internet; tu historial y tus notas se guardan solo en este teléfono. Versión del 26 de noviembre de 2026 (6). Referencias marginales: <a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noopener">OpenBible.info</a> (CC BY).</div>`;
 }
 function bindForget(){
   const f=$('#forget'); if(!f) return;
@@ -1053,25 +1053,53 @@ function hoyMX(){ return new Intl.DateTimeFormat('en-CA', {timeZone:'America/Mex
 function enlaceMisal(){ return 'https://misal.mx/'; }
 // [app] Evangelio católico oficial: Vatican News (Santa Sede), con el Leccionario de la Conferencia del Episcopado Mexicano
 function enlaceVaticano(){ return 'https://www.vaticannews.va/es/evangelio-de-hoy/' + hoyMX().replace(/-/g,'/') + '.html'; }
+/* [app] Las citas de las lecturas del día vienen de misal.mx (las revisa GitHub varias veces al día y las guarda
+   en evangelio.json). El TEXTO del Evangelio es el de la Biblia Latinoamericana que trae la app. */
+var evgDatos=null;   // var (no let): la portada lo lee antes de llegar a esta línea
+function evgCargar(){
+  return fetch('evangelio.json', {cache:'no-cache'}).then(r=>r.ok?r.json():null).catch(()=>null).then(d=>{ if(d) evgDatos=d; return evgDatos; });
+}
+function evgHoy(){ return evgDatos && evgDatos.dias ? evgDatos.dias[hoyMX()] || null : null; }
 function tarjetaEvangelio(){
-  return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${esc(dateLong(hoyMX()))}</span><small>Evangelio católico de hoy · Vatican News</small></div></button>`;
+  const d=evgHoy();
+  return `<button class="evg-card" id="evgCard" type="button"><span class="ico">✝</span><div><b>Evangelio del día</b><span>${d?esc(d.evangelio.cita):esc(dateLong(hoyMX()))}</span><small>${d?esc(dateLong(hoyMX())):'Lecturas de la misa de hoy · calendario de México'}</small></div></button>`;
 }
 function renderEvangelio(){
   setView('gospel');
-  main.innerHTML=`<div class="col">
-    <div class="evg-head"><span class="fecha">${esc(dateLong(hoyMX()))} · hoy</span><h2>Evangelio del día</h2>
-      <div class="santos">El Evangelio católico de la misa de hoy, de la Santa Sede, con el texto del Leccionario de la Conferencia del Episcopado Mexicano.</div></div>
-    <a class="evg-card" id="evgAbrir" href="${enlaceVaticano()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px"><span class="ico">✝</span><div><b>Evangelio de hoy · Vatican News</b><span>Abrir el Evangelio católico de hoy</span><small>Página oficial de la Santa Sede (necesita internet)</small></div></a>
-    <a class="evg-card" id="evgMisal" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:10px"><span class="ico">✝</span><div><b>Misal diario de México</b><span>Todas las lecturas de la misa de hoy</span><small>Misal.mx, calendario litúrgico de México (útil en fiestas mexicanas, como el 12 de diciembre)</small></div></a>
-    <div class="evg-otras"><b style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)">Leerlo en tu Biblia Latinoamericana</b>
-      <p class="hint" style="margin:0">Escribe aquí la cita del Evangelio (por ejemplo <i>Lc 21,12-19</i>) para leerla, copiarla y guardarla en tu historial.</p>
-      <form class="search" id="evgForm" autocomplete="off" style="box-shadow:none;border:1px solid var(--line)"><input id="evgCita" type="search" enterkeyhint="search" placeholder="Cita del Evangelio de hoy" aria-label="Cita del Evangelio de hoy"><button class="go" type="submit">Leer</button></form>
-    </div>
-    <p class="evg-fuente">Fuentes: <a href="${enlaceVaticano()}" target="_blank" rel="noopener">Vatican News</a> (Santa Sede; textos del Leccionario de la Conferencia del Episcopado Mexicano) y <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a>. La app no copia su contenido.</p>
-  </div>`;
-  $('#evgForm').onsubmit=e=>{ e.preventDefault(); const q=$('#evgCita').value.trim(); if(q) runQuery(q, {tidy:true}); };
-  window.scrollTo({top:0});
+  const pintar=()=>{
+    const d=evgHoy();
+    let cuerpo='';
+    if(d){
+      const u=understand(d.evangelio.app), blocks=u?u.refs.map(resolveRef):[], vs=blocks.flatMap(b=>b.verses);
+      const multi=vs.length>1;
+      const texto = vs.length ? `<p class="txt">${vs.map(x=>`${multi?`<sup>${x.l||x.v}</sup>`:''}${esc(x.t)}`).join(' ')}</p>` : `<p class="hint">No encontré estos versículos en esta Biblia; ábrelos en Misal.mx.</p>`;
+      const otra=(k,t)=> d[k] ? `<button class="evg-otra" type="button" data-q="${esc(d[k].app)}"><div><b>${t}</b><span>${esc(d[k].ver||d[k].cita)}</span></div><span aria-hidden="true">›</span></button>` : '';
+      cuerpo=`<article class="hit" style="margin-top:14px"><div class="top"><button class="ref" type="button" id="evgRef">${esc(d.evangelio.cita)}</button></div>${texto}
+          <div class="acts"><button class="pill" type="button" id="evgCopiar">${ICON_COPY}Copiar</button><button class="pill" type="button" id="evgGuardar">Guardar en mi clase</button><button class="pill" type="button" id="evgLeer">${ICON_READ}Leer capítulo</button></div></article>
+        <div class="evg-otras">${otra('primera','Primera lectura')}${otra('salmo','Salmo')}${otra('segunda','Segunda lectura')}</div>`;
+      setTimeout(()=>{
+        const lab=u?u.refs.map(r=>refLabel(r,true)).join('; '):d.evangelio.cita;
+        $('#evgCopiar').onclick=()=>copyText(`${d.evangelio.cita}
+${citeText(vs)}`);
+        $('#evgGuardar').onclick=()=>{ if(!u) return; const g=Hist.record(lab, u.refs); toast(g?'Guardado en «'+Hist.nombre(g)+'»':'El historial está en pausa'); };
+        $('#evgLeer').onclick=$('#evgRef').onclick=()=>{ if(u) openChapter(u.refs[0].id, u.refs[0].c1, u.refs[0].v1); };
+        main.querySelectorAll('.evg-otra[data-q]').forEach(bt=>bt.onclick=()=>runQuery(bt.dataset.q, {tidy:true}));
+      });
+    } else {
+      cuerpo=`<div class="empty" style="margin-top:14px"><b>${navigator.onLine===false?'Sin internet':'Todavía no está el Evangelio de hoy'}</b>${navigator.onLine===false?'Conéctate una vez hoy para que la app reciba la cita del Evangelio del día.':'La cita se actualiza sola en la mañana, cuando Misal.mx publica las lecturas. Mientras, puedes abrir Misal.mx.'}</div>`;
+    }
+    main.innerHTML=`<div class="col">
+      <div class="evg-head"><span class="fecha">${esc(dateLong(hoyMX()))} · hoy</span><h2>Evangelio del día</h2>
+        ${d&&d.santos?`<div class="santos">${esc(d.santos)}</div>`:''}</div>
+      ${cuerpo}
+      <a class="evg-otra" href="${enlaceMisal()}" target="_blank" rel="noopener" style="text-decoration:none;margin-top:16px;color:inherit"><div><b>Misal diario de México</b><span>Ver todas las oraciones y lecturas en Misal.mx</span></div><span aria-hidden="true">›</span></a>
+      <p class="evg-fuente">Las citas del día se toman de <a href="${enlaceMisal()}" target="_blank" rel="noopener">misal.mx</a> (calendario litúrgico de México). El texto es el de tu Biblia Latinoamericana; la numeración de algunos versículos puede variar un poco respecto al leccionario.</p>
+    </div>`;
+  };
+  pintar(); window.scrollTo({top:0});
+  evgCargar().then(()=>{ if(view==='gospel') pintar(); });
 }
+evgCargar().then(()=>{ const c=$('#evgCard'); if(c && evgHoy()){ c.outerHTML=tarjetaEvangelio(); const n=$('#evgCard'); if(n) n.onclick=renderEvangelio; } });
 $('#tabEvg').onclick=renderEvangelio;
 
 /* ---------- [app] Modo claro / oscuro ---------- */
