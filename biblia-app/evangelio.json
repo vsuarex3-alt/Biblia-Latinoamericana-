@@ -35,8 +35,25 @@
     "app": "Lucas 21,29-33"
    },
    "primera": {
-    "cita": "Apocalipsis 20, 1-4. 11–21, 2",
+    "cita": "Apocalipsis 20, 1-4. 11-21, 2",
     "app": "Apocalipsis 20,1-4; Apocalipsis 20,11-21,2"
+   },
+   "salmo": {
+    "cita": "Salmo 83",
+    "app": "Salmos 84",
+    "ver": "Salmo 84 (83)"
+   },
+   "santos": "San Virgilio de Salzburgo, San Facundo & San Primitivo",
+   "fuente": "misal.mx"
+  },
+  "2026-11-28": {
+   "evangelio": {
+    "cita": "Lucas 21, 34-36",
+    "app": "Lucas 21,34-36"
+   },
+   "primera": {
+    "cita": "Apocalipsis 22, 1-7",
+    "app": "Apocalipsis 22,1-7"
    },
    "fuente": "vaticannews.va"
   }
