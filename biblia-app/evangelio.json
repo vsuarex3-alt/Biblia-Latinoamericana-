@@ -56,6 +56,21 @@
     "app": "Apocalipsis 22,1-7"
    },
    "fuente": "vaticannews.va"
+  },
+  "2026-11-29": {
+   "evangelio": {
+    "cita": "Marcos 13, 33-37",
+    "app": "Marcos 13,33-37"
+   },
+   "primera": {
+    "cita": "Isaías 63, 16b-17. 19b; 64, 2b-7",
+    "app": "Isaías 63,16-17; Isaías 63,19; Isaías 64,2-7"
+   },
+   "segunda": {
+    "cita": "1 Corintios 1, 3-9",
+    "app": "1 Corintios 1,3-9"
+   },
+   "fuente": "vaticannews.va"
   }
  }
 }
